@@ -94,15 +94,21 @@ function normalizeAngle(angle) {
     }
     return angle;
 }
+function distance(x1,y1,x2,y2) {
+    return Math.sqrt(((Math.abs(x2 - x1))^2) + ((Math.abs(y2 - y1))^2));
+}
 class Ray {
     constructor(rayAngle) {
         this.rayAngle = normalizeAngle(rayAngle);
         
         this.xDistance = 0;
         this.yDistance = 0;
-        this.wallHitX = 0;
-        this.wallHitY = 0;
-        this.distance = 0;
+        this.wallHitXHori = 0;
+        this.wallHitYHori = 0;
+        this.wallHitXVert = 0;
+        this.wallHitYVert = 0;
+        this.distanceHori = 0;
+        this.distanceVert = 0;
 
         this.isRayFacingDown = this.rayAngle > 0 && this.rayAngle < Math.PI;
         this.isRayFacingUp = !this.isRayFacingDown;
@@ -111,38 +117,82 @@ class Ray {
 
     }
     cast(columnId) {
-        var xintercept, yintercept;
-        var xstep, ystep;
         //Horizontal Ray-Grid Interesection Code
-        yintercept = Math.floor(player.y/TILE_SIZE) * TILE_SIZE;
-        yintercept += this.isRayFacingDown ? TILE_SIZE : 0;
-        xintercept = player.x + ((yintercept - player.y)/Math.tan(this.rayAngle));
+        var xinterceptHori, yinterceptHori;
+        var xstep, ystep;
+        
+        yinterceptHori = Math.floor(player.y/TILE_SIZE) * TILE_SIZE;
+        yinterceptHori += this.isRayFacingDown ? TILE_SIZE : 0;
+        xinterceptHori = player.x + ((yinterceptHori - player.y)/Math.tan(this.rayAngle));
 
-        //calculate the increment xstep and ystep;
         ystep = TILE_SIZE;
         ystep *= this.isRayFacingUp ? -1 : 1;
         xstep = TILE_SIZE / Math.tan(this.rayAngle);
         xstep *= (this.isRayFacingLeft && xstep > 0) ? -1 : 1;
         xstep *= (this.isRayFacingRight && xstep < 0) ? -1 : 1;
         var xz = 0;
+        if(this.isRayFacingUp) {
+            yinterceptHori--;
+        }
         while (xz < 10) {
-            if(this.isRayFacingUp) {
-                yintercept--;
-            }
-            this.wallHitX = xintercept;
-            this.wallHitY = yintercept;
+            this.wallHitXHori = xinterceptHori;
+            this.wallHitYHori = yinterceptHori;
             //fix for edge case where I wasnt detecting a wall.
-            if (grid.hasWallAt(this.wallHitX,this.wallHitY)) {
+            if (grid.hasWallAt(this.wallHitXHori,this.wallHitYHori)) {
                 xz = 10;
+                if(this.isRayFacingUp){
+                    this.wallHitYHori = this.wallHitYHori+1;
+                }
+                this.distanceHori = distance(player.x, player.y, this.wallHitXHori, this.wallHitYHori);
             }
-            xintercept += xstep;
-            yintercept += ystep;
+            xinterceptHori += xstep;
+            yinterceptHori += ystep;
             xz++;
         }
+
+        //Vertical Ray-Grid Interesection Code
+        var xinterceptVert, yinterceptVert;
+        var xstepVert, ystepVert;
+        
+        xinterceptVert = Math.floor(player.x/TILE_SIZE) * TILE_SIZE;
+        xinterceptVert += this.isRayFacingRight ? TILE_SIZE : 0;
+        yinterceptVert = player.y + ((xinterceptVert - player.x) * Math.tan(this.rayAngle));
+
+        xstepVert = TILE_SIZE;
+        xstepVert *= this.isRayFacingLeft ? -1 : 1;
+        ystepVert = TILE_SIZE * Math.tan(this.rayAngle);
+        ystepVert *= (this.isRayFacingUp && ystepVert > 0) ? -1 : 1;
+        ystepVert *= (this.isRayFacingDown && ystepVert < 0) ? -1 : 1;
+        var xzy = 0;
+        if(this.isRayFacingLeft) {
+            xinterceptVert--;
+        }
+        while (xzy < 10) {
+
+            this.wallHitXVert = xinterceptVert;
+            this.wallHitYVert = yinterceptVert;
+            //fix for edge case where I wasnt detecting a wall.
+            if (grid.hasWallAt(this.wallHitXVert,this.wallHitYVert)) {
+                xzy = 10;
+                if(this.isRayFacingLeft) {
+                    this.wallHitXVert++;
+                }
+                this.distanceVert = distance(player.x, player.y, this.wallHitXVert, this.wallHitYVert);
+            }
+            xinterceptVert += xstepVert;
+            yinterceptVert += ystepVert;
+            xzy++;
+        }
+
+      //  compare sizes
+       if(Math.abs(this.distanceHori) < Math.abs(this.distanceVert)) {
+           this.wallHitXVert = this.wallHitXHori;
+           this.wallHitYVert = this.wallHitYHori;
+       }
     }
     render () {
         stroke("rgba(255,0,0,0.3)");
-        line(player.x, player.y, this.wallHitX, this.wallHitY);
+        line(player.x, player.y, this.wallHitXVert, this.wallHitYVert);
     }
 }
 var grid = new Map();
