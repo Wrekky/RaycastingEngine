@@ -7,7 +7,7 @@ const WINDOW_HEIGHT = MAP_NUM_ROWS * TILE_SIZE;
 
 const FOV_ANGLE = 60 * (Math.PI / 180);
 
-const WALL_STRIPE_WIDTH = WINDOW_WIDTH;
+const WALL_STRIPE_WIDTH = 4;
 const NUM_RAYS = WINDOW_WIDTH / WALL_STRIPE_WIDTH;
 
 
@@ -100,7 +100,7 @@ function distance(x1,y1,x2,y2) {
 class Ray {
     constructor(rayAngle) {
         this.rayAngle = normalizeAngle(rayAngle);
-        
+        //console.log(this.rayAngle);
         this.xDistance = 0;
         this.yDistance = 0;
         this.wallHitXHori = 0;
@@ -123,7 +123,7 @@ class Ray {
         
         yinterceptHori = Math.floor(player.y/TILE_SIZE) * TILE_SIZE;
         yinterceptHori += this.isRayFacingDown ? TILE_SIZE : 0;
-        xinterceptHori = player.x + ((yinterceptHori - player.y)/Math.tan(this.rayAngle));
+        xinterceptHori = player.x + ((yinterceptHori - player.y)/Math.tan(this.rayAngle.toFixed(6)));
 
         ystep = TILE_SIZE;
         ystep *= this.isRayFacingUp ? -1 : 1;
@@ -156,8 +156,7 @@ class Ray {
         
         xinterceptVert = Math.floor(player.x/TILE_SIZE) * TILE_SIZE;
         xinterceptVert += this.isRayFacingRight ? TILE_SIZE : 0;
-        yinterceptVert = player.y + ((xinterceptVert - player.x) * Math.tan(this.rayAngle));
-
+        yinterceptVert = player.y + ((xinterceptVert - player.x) * Math.tan(this.rayAngle.toFixed(6)));
         xstepVert = TILE_SIZE;
         xstepVert *= this.isRayFacingLeft ? -1 : 1;
         ystepVert = TILE_SIZE * Math.tan(this.rayAngle);
