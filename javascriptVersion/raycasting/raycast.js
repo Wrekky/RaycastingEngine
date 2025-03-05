@@ -100,7 +100,6 @@ function distance(x1,y1,x2,y2) {
 class Ray {
     constructor(rayAngle) {
         this.rayAngle = normalizeAngle(rayAngle);
-        //console.log(this.rayAngle);
         this.xDistance = 0;
         this.yDistance = 0;
         this.wallHitXHori = 0;
@@ -109,7 +108,7 @@ class Ray {
         this.wallHitYVert = 0;
         this.distanceHori = 0;
         this.distanceVert = 0;
-
+        this.distance = 0;
         this.isRayFacingDown = this.rayAngle > 0 && this.rayAngle < Math.PI;
         this.isRayFacingUp = !this.isRayFacingDown;
         this.isRayFacingRight = this.rayAngle > Math.PI * 1.5 || this.rayAngle < Math.PI * 0.5;
@@ -131,18 +130,13 @@ class Ray {
         xstep *= (this.isRayFacingLeft && xstep > 0) ? -1 : 1;
         xstep *= (this.isRayFacingRight && xstep < 0) ? -1 : 1;
         var xz = 0;
-        if(this.isRayFacingUp) {
-            yinterceptHori--;
-        }
+
         while (xz < 10) {
             this.wallHitXHori = xinterceptHori;
             this.wallHitYHori = yinterceptHori;
             //fix for edge case where I wasnt detecting a wall.
-            if (grid.hasWallAt(this.wallHitXHori,this.wallHitYHori)) {
+            if (grid.hasWallAt(this.wallHitXHori,this.wallHitYHori - (this.isRayFacingUp ? 1 : 0))) {
                 xz = 10;
-                if(this.isRayFacingUp){
-                    this.wallHitYHori = this.wallHitYHori+1;
-                }
                 this.distanceHori = distance(player.x, player.y, this.wallHitXHori, this.wallHitYHori);
             }
             xinterceptHori += xstep;
@@ -163,19 +157,13 @@ class Ray {
         ystepVert *= (this.isRayFacingUp && ystepVert > 0) ? -1 : 1;
         ystepVert *= (this.isRayFacingDown && ystepVert < 0) ? -1 : 1;
         var xzy = 0;
-        if(this.isRayFacingLeft) {
-            xinterceptVert--;
-        }
         while (xzy < 10) {
 
             this.wallHitXVert = xinterceptVert;
             this.wallHitYVert = yinterceptVert;
             //fix for edge case where I wasnt detecting a wall.
-            if (grid.hasWallAt(this.wallHitXVert,this.wallHitYVert)) {
+            if (grid.hasWallAt(this.wallHitXVert - (this.isRayFacingLeft ? 1 : 0),this.wallHitYVert)) {
                 xzy = 10;
-                if(this.isRayFacingLeft) {
-                    this.wallHitXVert++;
-                }
                 this.distanceVert = distance(player.x, player.y, this.wallHitXVert, this.wallHitYVert);
             }
             xinterceptVert += xstepVert;
@@ -185,8 +173,12 @@ class Ray {
 
       //  compare sizes
        if(Math.abs(this.distanceHori) < Math.abs(this.distanceVert)) {
-           this.wallHitXVert = this.wallHitXHori;
-           this.wallHitYVert = this.wallHitYHori;
+        this.distance = this.distanceHori;
+        this.wallHitXVert = this.wallHitXHori;
+        this.wallHitYVert = this.wallHitYHori;
+       }
+       else{
+        this.distance = this.distanceVert;
        }
     }
     render () {
@@ -242,8 +234,9 @@ function castAllRays() {
 }
 function update() {
     // TODO: update all game objects before we render the next frame
-    player.update()
     castAllRays();
+    player.update()
+    
 }
 
 function draw() {
