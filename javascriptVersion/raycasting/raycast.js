@@ -69,7 +69,6 @@ class Player {
     }
     update() {
         this.rotationAngle += this.turnDirection * this.rotationSpeed;
-        //y wall collision
         var xStep = Math.cos(this.rotationAngle) * (this.moveSpeed * this.walkDirection);
         var yStep = Math.sin(this.rotationAngle) * (this.moveSpeed * this.walkDirection);
         if (this.walkDirection != 0) {
@@ -100,8 +99,8 @@ function distance(x1,y1,x2,y2) {
 class Ray {
     constructor(rayAngle) {
         this.rayAngle = normalizeAngle(rayAngle);
-        this.xDistance = 0;
-        this.yDistance = 0;
+        this.wallHitX = 0;
+        this.wallHitY = 0;
         this.wallHitXHori = 0;
         this.wallHitYHori = 0;
         this.wallHitXVert = 0;
@@ -134,7 +133,6 @@ class Ray {
         while (xz < 10) {
             this.wallHitXHori = xinterceptHori;
             this.wallHitYHori = yinterceptHori;
-            //fix for edge case where I wasnt detecting a wall.
             if (grid.hasWallAt(this.wallHitXHori,this.wallHitYHori - (this.isRayFacingUp ? 1 : 0))) {
                 xz = 10;
                 this.distanceHori = distance(player.x, player.y, this.wallHitXHori, this.wallHitYHori);
@@ -161,7 +159,6 @@ class Ray {
 
             this.wallHitXVert = xinterceptVert;
             this.wallHitYVert = yinterceptVert;
-            //fix for edge case where I wasnt detecting a wall.
             if (grid.hasWallAt(this.wallHitXVert - (this.isRayFacingLeft ? 1 : 0),this.wallHitYVert)) {
                 xzy = 10;
                 this.distanceVert = distance(player.x, player.y, this.wallHitXVert, this.wallHitYVert);
@@ -171,14 +168,15 @@ class Ray {
             xzy++;
         }
 
-      //  compare sizes
-       if(Math.abs(this.distanceHori) < Math.abs(this.distanceVert)) {
+       if (Math.abs(this.distanceHori) < Math.abs(this.distanceVert)) {
         this.distance = this.distanceHori;
-        this.wallHitXVert = this.wallHitXHori;
-        this.wallHitYVert = this.wallHitYHori;
+        this.wallHitX = this.wallHitXHori;
+        this.wallHitY = this.wallHitYHori;
        }
-       else{
+       else {
         this.distance = this.distanceVert;
+        this.wallHitX = this.wallHitXVert;
+        this.wallHitY = this.wallHitYVert;
        }
     }
     render () {
