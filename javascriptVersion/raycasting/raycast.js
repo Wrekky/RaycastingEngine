@@ -181,7 +181,7 @@ class Ray {
     }
     render () {
         stroke("rgba(255,0,0,0.3)");
-        line(player.x, player.y, this.wallHitXVert, this.wallHitYVert);
+        line(player.x, player.y, this.wallHitX, this.wallHitY);
     }
 }
 var grid = new Map();
