@@ -10,7 +10,7 @@ const FOV_ANGLE = 60 * (Math.PI / 180);
 const WALL_STRIPE_WIDTH = 4;
 const NUM_RAYS = WINDOW_WIDTH / WALL_STRIPE_WIDTH;
 
-
+const MINIMAP_SCALE_FACTOR = 0.2;
 class Map {
     constructor() {
         this.grid = [
@@ -43,7 +43,7 @@ class Map {
                 var tileColor = this.grid[i][j] == 1 ? "#222" : "#fff";
                 stroke("#222");
                 fill(tileColor);
-                rect(tileX, tileY, TILE_SIZE, TILE_SIZE);
+                rect(MINIMAP_SCALE_FACTOR * tileX, MINIMAP_SCALE_FACTOR * tileY, MINIMAP_SCALE_FACTOR * TILE_SIZE, MINIMAP_SCALE_FACTOR * TILE_SIZE);
             }
         }
     }
@@ -61,11 +61,12 @@ class Player {
         this.rotationSpeed = 2 * (Math.PI / 180);
     }
     render() {
+        noStroke();
         fill("yellow");
-        circle(this.x, this.y, this.radius);
+        circle(MINIMAP_SCALE_FACTOR * this.x, MINIMAP_SCALE_FACTOR * this.y, MINIMAP_SCALE_FACTOR * this.radius);
         stroke('magenta');
         strokeWeight(1);
-        line(this.x, this.y, this.x + Math.cos(this.rotationAngle) * 20,this.y + Math.sin(this.rotationAngle) * 20);
+        line(MINIMAP_SCALE_FACTOR * this.x, MINIMAP_SCALE_FACTOR * this.y, MINIMAP_SCALE_FACTOR * (this.x + Math.cos(this.rotationAngle) * 20),MINIMAP_SCALE_FACTOR * (this.y + Math.sin(this.rotationAngle) * 20));
     }
     update() {
         this.rotationAngle += this.turnDirection * this.rotationSpeed;
@@ -94,7 +95,8 @@ function normalizeAngle(angle) {
     return angle;
 }
 function distance(x1,y1,x2,y2) {
-    return Math.sqrt(((Math.abs(x2 - x1))^2) + ((Math.abs(y2 - y1))^2));
+
+    return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 class Ray {
     constructor(rayAngle) {
@@ -121,10 +123,11 @@ class Ray {
         
         yinterceptHori = Math.floor(player.y/TILE_SIZE) * TILE_SIZE;
         yinterceptHori += this.isRayFacingDown ? TILE_SIZE : 0;
-        xinterceptHori = player.x + ((yinterceptHori - player.y)/Math.tan(this.rayAngle.toFixed(6)));
+        xinterceptHori = player.x + (yinterceptHori - player.y) / Math.tan(this.rayAngle);
 
         ystep = TILE_SIZE;
         ystep *= this.isRayFacingUp ? -1 : 1;
+
         xstep = TILE_SIZE / Math.tan(this.rayAngle);
         xstep *= (this.isRayFacingLeft && xstep > 0) ? -1 : 1;
         xstep *= (this.isRayFacingRight && xstep < 0) ? -1 : 1;
@@ -148,9 +151,12 @@ class Ray {
         
         xinterceptVert = Math.floor(player.x/TILE_SIZE) * TILE_SIZE;
         xinterceptVert += this.isRayFacingRight ? TILE_SIZE : 0;
-        yinterceptVert = player.y + ((xinterceptVert - player.x) * Math.tan(this.rayAngle.toFixed(6)));
+
+        yinterceptVert = player.y + (xinterceptVert - player.x) * Math.tan(this.rayAngle);
+
         xstepVert = TILE_SIZE;
         xstepVert *= this.isRayFacingLeft ? -1 : 1;
+
         ystepVert = TILE_SIZE * Math.tan(this.rayAngle);
         ystepVert *= (this.isRayFacingUp && ystepVert > 0) ? -1 : 1;
         ystepVert *= (this.isRayFacingDown && ystepVert < 0) ? -1 : 1;
@@ -180,8 +186,8 @@ class Ray {
        }
     }
     render () {
-        stroke("rgba(255,0,0,0.3)");
-        line(player.x, player.y, this.wallHitX, this.wallHitY);
+        stroke("rgba(255, 0, 0, 1.0)");
+        line(MINIMAP_SCALE_FACTOR * player.x, MINIMAP_SCALE_FACTOR * player.y, MINIMAP_SCALE_FACTOR * this.wallHitX, MINIMAP_SCALE_FACTOR * this.wallHitY);
     }
 }
 var grid = new Map();
@@ -232,12 +238,15 @@ function castAllRays() {
 }
 function update() {
     // TODO: update all game objects before we render the next frame
+    player.update();
     castAllRays();
-    player.update()
+    
     
 }
 
 function draw() {
+
+    clear("#212121");
     update();
 
     grid.render();
