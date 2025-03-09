@@ -7,10 +7,10 @@ const WINDOW_HEIGHT = MAP_NUM_ROWS * TILE_SIZE;
 
 const FOV_ANGLE = 60 * (Math.PI / 180);
 
-const WALL_STRIPE_WIDTH = 4;
+const WALL_STRIPE_WIDTH = 1;
 const NUM_RAYS = WINDOW_WIDTH / WALL_STRIPE_WIDTH;
 
-const MINIMAP_SCALE_FACTOR = 0.2;
+const MINIMAP_SCALE_FACTOR = 0.3;
 class Map {
     constructor() {
         this.grid = [
@@ -48,7 +48,27 @@ class Map {
         }
     }
 }
-
+class Wall {
+    constructor(distance) {
+        this.distance = distance;
+        this.height = distance; //Should be the inverse of distance kinda, farther objects should make the height smaller.
+        this.width = WALL_STRIPE_WIDTH; //columnId * wallstripewidth
+        this.x = 0; //should be ray columnId
+        this.y = 0; //starting point of the wall. Wall should be centered.
+    }
+    create(columnId) {
+        this.x = columnId * WALL_STRIPE_WIDTH;
+        this.y = 0; //should be dynamic or i can make it dynamic.
+        var maxSize = WINDOW_HEIGHT;
+        this.height = (maxSize - this.distance);
+        this.height = this.height < 0 ? 1 : this.height;
+    }
+    render() {
+        stroke("rgba(255, 0, 0, 1.0)");
+        fill("rgba(255, 0, 0, 1.0)")
+        rect(this.x, this.y, this.width, this.height);
+    }
+}
 class Player {
     constructor() {
         this.x = WINDOW_WIDTH / 2;
@@ -133,11 +153,11 @@ class Ray {
         xstep *= (this.isRayFacingRight && xstep < 0) ? -1 : 1;
         var xz = 0;
 
-        while (xz < 10) {
+        while (xz < 16) {
             this.wallHitXHori = xinterceptHori;
             this.wallHitYHori = yinterceptHori;
             if (grid.hasWallAt(this.wallHitXHori,this.wallHitYHori - (this.isRayFacingUp ? 1 : 0))) {
-                xz = 10;
+                xz = 16;
                 this.distanceHori = distance(player.x, player.y, this.wallHitXHori, this.wallHitYHori);
             }
             xinterceptHori += xstep;
@@ -161,12 +181,12 @@ class Ray {
         ystepVert *= (this.isRayFacingUp && ystepVert > 0) ? -1 : 1;
         ystepVert *= (this.isRayFacingDown && ystepVert < 0) ? -1 : 1;
         var xzy = 0;
-        while (xzy < 10) {
+        while (xzy < 16) {
 
             this.wallHitXVert = xinterceptVert;
             this.wallHitYVert = yinterceptVert;
             if (grid.hasWallAt(this.wallHitXVert - (this.isRayFacingLeft ? 1 : 0),this.wallHitYVert)) {
-                xzy = 10;
+                xzy = 16;
                 this.distanceVert = distance(player.x, player.y, this.wallHitXVert, this.wallHitYVert);
             }
             xinterceptVert += xstepVert;
@@ -193,6 +213,7 @@ class Ray {
 var grid = new Map();
 var player = new Player();
 var rays = [];
+var walls = [];
 function keyPressed() {
     if (keyCode == UP_ARROW) {
         player.walkDirection = 1;
@@ -226,7 +247,7 @@ function castAllRays() {
     var rayAngle = player.rotationAngle - (FOV_ANGLE/2);
 
     rays = [];
-
+    walls = [];
     //loop all columns casting the rays.
     for (var i = 0; i < NUM_RAYS; i++) {
         var ray = new Ray(rayAngle);
@@ -234,6 +255,18 @@ function castAllRays() {
         rays.push(ray);
         rayAngle += FOV_ANGLE / NUM_RAYS;
         columnId ++;
+        //generate wall based on ray:
+
+        //calculate distance from projection plane:
+        var wallHeight = TILE_SIZE/2;
+        var playerDist = ray.distance;
+        WINDOW_WIDTH/2
+        var projectionDistance = ;
+        var wall = new Wall(ray.distance);
+        
+        wall.create(columnId);
+
+        walls.push(wall);
     }
 }
 function update() {
@@ -249,10 +282,14 @@ function draw() {
     clear("#212121");
     update();
 
-    grid.render();
+    for (wall of walls) {
+        wall.render();
+    }
+
     
+    grid.render();
+    player.render();
     for(ray of rays) {
         ray.render();
     }
-    player.render();
 }
