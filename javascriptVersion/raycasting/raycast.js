@@ -202,6 +202,7 @@ class Ray {
         this.wallHitX = this.wallHitXVert;
         this.wallHitY = this.wallHitYVert;
        }
+       this.distance = Math.cos(this.rayAngle - player.rotationAngle) * this.distance;
     }
     render () {
         stroke("rgba(255, 0, 0, 1.0)");
