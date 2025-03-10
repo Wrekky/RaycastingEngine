@@ -54,10 +54,10 @@ class Wall {
         this.height = wallHeight;
         this.width = WALL_STRIPE_WIDTH; //columnId * wallstripewidth
         this.x = WINDOW_WIDTH; //should be ray columnId
-        this.y = WINDOW_HEIGHT; //starting point of the wall. Wall should be centered.
+        this.y = 0; //starting point of the wall. Wall should be centered.
     }
     create(columnId) {
-        this.x = (columnId * WALL_STRIPE_WIDTH) - 50;
+        this.x = (columnId * WALL_STRIPE_WIDTH);
         this.y = 0; //should be dynamic or i can make it dynamic.
     }
     render() {
@@ -251,19 +251,20 @@ function castAllRays() {
         ray.cast(columnId);
         rays.push(ray);
         rayAngle += FOV_ANGLE / NUM_RAYS;
-        columnId ++;
+        
         //generate wall based on ray:
 
         //calculate distance from projection plane:
         var wallHeight = TILE_SIZE/2;
         var playerDist = ray.distance;
         var projectionPlaneWidth = WINDOW_WIDTH/2
-        var projectionDistance = projectionPlaneWidth/Math.tan(rayAngle);
+        var projectionDistance = projectionPlaneWidth/Math.tan(FOV_ANGLE / 2);
         var projectedWallHeight = (wallHeight/playerDist * projectionDistance) * 2;
-        var wall = new Wall(ray.distance, projectedWallHeight);
+        var wall = new Wall(projectionDistance, projectedWallHeight);
         wall.create(columnId);
 
         walls.push(wall);
+        columnId ++;
     }
 }
 function update() {
