@@ -9,7 +9,7 @@ const FOV_ANGLE = 60 * (Math.PI / 180);
 
 const WALL_STRIPE_WIDTH = 1;
 const NUM_RAYS = WINDOW_WIDTH / WALL_STRIPE_WIDTH;
-
+const PROJECTION_DISTANCE = (WINDOW_WIDTH/2)/Math.tan(FOV_ANGLE / 2);
 const MINIMAP_SCALE_FACTOR = 0.3;
 class Map {
     constructor() {
@@ -58,11 +58,12 @@ class Wall {
     }
     create(columnId) {
         this.x = (columnId * WALL_STRIPE_WIDTH);
-        this.y = 0; //should be dynamic or i can make it dynamic.
+        this.y = (WINDOW_HEIGHT/2) - (this.height/2); //should be dynamic or i can make it dynamic.
     }
     render() {
         stroke("rgba(255, 0, 0, 1.0)");
         fill("rgba(255, 0, 0, 1.0)")
+        //console.log(this.y);
         rect(this.x, this.y, this.width, this.height);
     }
 }
@@ -257,10 +258,9 @@ function castAllRays() {
         //calculate distance from projection plane:
         var wallHeight = TILE_SIZE/2;
         var playerDist = ray.distance;
-        var projectionPlaneWidth = WINDOW_WIDTH/2
-        var projectionDistance = projectionPlaneWidth/Math.tan(FOV_ANGLE / 2);
-        var projectedWallHeight = (wallHeight/playerDist * projectionDistance) * 2;
-        var wall = new Wall(projectionDistance, projectedWallHeight);
+        
+        var projectedWallHeight = (wallHeight/playerDist * PROJECTION_DISTANCE) * 2;
+        var wall = new Wall(PROJECTION_DISTANCE, projectedWallHeight);
         wall.create(columnId);
 
         walls.push(wall);
