@@ -61,7 +61,9 @@ class Wall {
         this.y = (WINDOW_HEIGHT/2) - (this.height/2); //should be dynamic or i can make it dynamic.
     }
     render() {
-        stroke("rgba(255, 0, 0, 1.0)");
+        var wallMult = 1 - (this.distance/(WINDOW_WIDTH + WINDOW_HEIGHT)); 
+        var wallColor = color(255 * wallMult,255 * wallMult,255 * wallMult);
+        stroke(wallColor);
         fill("rgba(255, 0, 0, 1.0)")
         //console.log(this.y);
         rect(this.x, this.y, this.width, this.height);
@@ -261,7 +263,7 @@ function castAllRays() {
         var playerDist = ray.distance;
         
         var projectedWallHeight = (wallHeight/playerDist * PROJECTION_DISTANCE) * 2;
-        var wall = new Wall(PROJECTION_DISTANCE, projectedWallHeight);
+        var wall = new Wall(playerDist, projectedWallHeight);
         wall.create(columnId);
 
         walls.push(wall);
