@@ -49,19 +49,16 @@ class Map {
     }
 }
 class Wall {
-    constructor(distance) {
+    constructor(distance, wallHeight) {
         this.distance = distance;
-        this.height = distance; //Should be the inverse of distance kinda, farther objects should make the height smaller.
+        this.height = wallHeight;
         this.width = WALL_STRIPE_WIDTH; //columnId * wallstripewidth
-        this.x = 0; //should be ray columnId
-        this.y = 0; //starting point of the wall. Wall should be centered.
+        this.x = WINDOW_WIDTH; //should be ray columnId
+        this.y = WINDOW_HEIGHT; //starting point of the wall. Wall should be centered.
     }
     create(columnId) {
-        this.x = columnId * WALL_STRIPE_WIDTH;
+        this.x = (columnId * WALL_STRIPE_WIDTH) - 50;
         this.y = 0; //should be dynamic or i can make it dynamic.
-        var maxSize = WINDOW_HEIGHT;
-        this.height = (maxSize - this.distance);
-        this.height = this.height < 0 ? 1 : this.height;
     }
     render() {
         stroke("rgba(255, 0, 0, 1.0)");
@@ -260,10 +257,10 @@ function castAllRays() {
         //calculate distance from projection plane:
         var wallHeight = TILE_SIZE/2;
         var playerDist = ray.distance;
-        WINDOW_WIDTH/2
-        var projectionDistance = ;
-        var wall = new Wall(ray.distance);
-        
+        var projectionPlaneWidth = WINDOW_WIDTH/2
+        var projectionDistance = projectionPlaneWidth/Math.tan(rayAngle);
+        var projectedWallHeight = (wallHeight/playerDist * projectionDistance) * 2;
+        var wall = new Wall(ray.distance, projectedWallHeight);
         wall.create(columnId);
 
         walls.push(wall);
@@ -283,6 +280,7 @@ function draw() {
     update();
 
     for (wall of walls) {
+        
         wall.render();
     }
 
