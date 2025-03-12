@@ -49,23 +49,27 @@ class Map {
     }
 }
 class Wall {
-    constructor(distance, wallHeight) {
+    constructor(distance, wallHeight, wasHitVertical) {
         this.distance = distance;
         this.height = wallHeight;
         this.width = WALL_STRIPE_WIDTH; //columnId * wallstripewidth
         this.x = WINDOW_WIDTH; //should be ray columnId
         this.y = 0; //starting point of the wall. Wall should be centered.
+        this.vertical = wasHitVertical;
     }
     create(columnId) {
         this.x = (columnId * WALL_STRIPE_WIDTH);
         this.y = (WINDOW_HEIGHT/2) - (this.height/2); //should be dynamic or i can make it dynamic.
     }
     render() {
-        var wallMult = 1 - (this.distance/(WINDOW_WIDTH + WINDOW_HEIGHT)); 
-        var wallColor = color(255 * wallMult,255 * wallMult,255 * wallMult);
-        stroke(wallColor);
-        fill("rgba(255, 0, 0, 1.0)")
-        //console.log(this.y);
+        var wallAlphaMult = 1 - (this.distance/(WINDOW_WIDTH + WINDOW_HEIGHT)); 
+        var wallColorMult = 1;
+        if(this.vertical == false) {
+            wallColorMult = 0.5; 
+        }
+        var wallColor = color(255 * wallColorMult,255* wallColorMult,255* wallColorMult,255 * wallAlphaMult);
+        fill(wallColor)
+        noStroke();
         rect(this.x, this.y, this.width, this.height);
     }
 }
@@ -130,6 +134,7 @@ class Ray {
         this.distanceHori = 0;
         this.distanceVert = 0;
         this.distance = 0;
+        this.wasHitVertical = false;
         this.isRayFacingDown = this.rayAngle > 0 && this.rayAngle < Math.PI;
         this.isRayFacingUp = !this.isRayFacingDown;
         this.isRayFacingRight = this.rayAngle > Math.PI * 1.5 || this.rayAngle < Math.PI * 0.5;
@@ -198,16 +203,18 @@ class Ray {
         this.distance = this.distanceHori;
         this.wallHitX = this.wallHitXHori;
         this.wallHitY = this.wallHitYHori;
+        this.wasHitVertical = false;
        }
        else {
         this.distance = this.distanceVert;
         this.wallHitX = this.wallHitXVert;
         this.wallHitY = this.wallHitYVert;
+        this.wasHitVertical = true;
        }
        this.distance = Math.cos(this.rayAngle - player.rotationAngle) * this.distance;
     }
     render () {
-        stroke("rgba(255, 0, 0, 1.0)");
+       // stroke("rgba(255, 0, 0, 1.0)");
         line(MINIMAP_SCALE_FACTOR * player.x, MINIMAP_SCALE_FACTOR * player.y, MINIMAP_SCALE_FACTOR * this.wallHitX, MINIMAP_SCALE_FACTOR * this.wallHitY);
     }
 }
@@ -263,7 +270,7 @@ function castAllRays() {
         var playerDist = ray.distance;
         
         var projectedWallHeight = (wallHeight/playerDist * PROJECTION_DISTANCE) * 2;
-        var wall = new Wall(playerDist, projectedWallHeight);
+        var wall = new Wall(playerDist, projectedWallHeight, ray.wasHitVertical);
         wall.create(columnId);
 
         walls.push(wall);
