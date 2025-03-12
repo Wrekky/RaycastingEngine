@@ -401,3 +401,4 @@ FodyWeavers.xsd
 raycasting-c/RaycastingProject/RaycastingProject.sln
 raycasting-c/RaycastingProject/RaycastingProject/RaycastingProject.vcxproj
 raycasting-c/RaycastingProject/RaycastingProject/RaycastingProject.vcxproj.filters
+raycasting-c/RaycastingProject/RaycastingProject/SDL3.dll
