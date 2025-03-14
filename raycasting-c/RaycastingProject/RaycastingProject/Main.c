@@ -4,6 +4,7 @@
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 int isGameRunning = FALSE;
+int playerX, playerY;
 int initializedWindow() {
 	//SDL_Init(SDL_Init);
 	window = SDL_CreateWindow(NULL, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_BORDERLESS);
@@ -13,7 +14,7 @@ int initializedWindow() {
 		return FALSE;
 	}
 
-	renderer = SDL_CreateRenderer(window, "test");
+	renderer = SDL_CreateRenderer(window, NULL);
 	if (!renderer) {
 		fprintf(stderr, "Error creating SDL renderer.\n");
 	}
@@ -27,11 +28,53 @@ void destroyWindow() {
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
+void setup() {
+	// TODO:
+	// Initialize and setup game objects.
 
+	playerX = 0;
+	playerY = 0;
+
+}
+void processInput() {
+	SDL_Event event;
+	SDL_PollEvent(&event);
+	switch (event.type) {
+		case SDL_EVENT_QUIT: {
+			isGameRunning = FALSE;
+			break;
+		}
+		case SDL_EVENT_KEY_DOWN: {
+			if (event.key.key == SDLK_ESCAPE)
+				isGameRunning = false;
+		}
+
+	}
+}
+
+void update() {
+	playerX = 50;
+	playerY = 50;
+
+}
+void render() {
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
+
+	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+	SDL_Rect rect = { playerX, playerY, 20,20 };
+	SDL_RenderFillRect(renderer, &rect);
+
+	SDL_RenderPresent(renderer);
+
+}
 int main(int argc, char* args[]) {
-	isGameRunning = initializeWindow();
+	isGameRunning = initializedWindow();
+	setup();
 	while (isGameRunning) {
-
+		processInput();
+		update();
+		render();
 	}
 
 	destroyWindow();
