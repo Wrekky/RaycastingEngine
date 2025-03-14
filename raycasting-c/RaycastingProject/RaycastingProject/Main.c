@@ -6,8 +6,8 @@ SDL_Renderer* renderer = NULL;
 int isGameRunning = FALSE;
 int playerX, playerY;
 int initializedWindow() {
-	//SDL_Init(SDL_Init);
-	window = SDL_CreateWindow(NULL, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_BORDERLESS);
+	SDL_Init(SDL_INIT_VIDEO);
+	window = SDL_CreateWindow("Test", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
 
 	if (!window) {
 		fprintf(stderr, "Error creating SDL window. \n");
@@ -53,20 +53,19 @@ void processInput() {
 }
 
 void update() {
-	playerX = 50;
-	playerY = 50;
+	playerX += 1;
+	playerY += 1;
 
 }
 void render() {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
-
+	
 	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-	SDL_Rect rect = { playerX, playerY, 20,20 };
+	SDL_FRect rect = { playerX, playerY, 20, 20 };
 	SDL_RenderFillRect(renderer, &rect);
 
 	SDL_RenderPresent(renderer);
-
 }
 int main(int argc, char* args[]) {
 	isGameRunning = initializedWindow();
@@ -74,6 +73,7 @@ int main(int argc, char* args[]) {
 	while (isGameRunning) {
 		processInput();
 		update();
+		
 		render();
 	}
 
