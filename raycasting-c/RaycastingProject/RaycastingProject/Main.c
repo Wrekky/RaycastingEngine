@@ -55,8 +55,12 @@ void processInput() {
 
 void update() {
 
-	while (SDL_GetTicks() < ticksLastFrame + FRAME_TIME_LENGTH);
-
+	//while (SDL_GetTicks() < ticksLastFrame + FRAME_TIME_LENGTH);
+	//SDL delay should be more efficient but potentially inconsistent. Will use while loop if it doesnt feel correct once all game logic is implemented.
+	int timeToWait = FRAME_TIME_LENGTH - (SDL_GetTicks() - ticksLastFrame);
+	if (timeToWait > 0 && timeToWait <= FRAME_TIME_LENGTH) {
+		SDL_Delay(timeToWait);
+	}
 	float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
 
 	ticksLastFrame = SDL_GetTicks();
