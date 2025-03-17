@@ -103,7 +103,6 @@ int hasWallAt(float x, float y) {
 
 void movePlayer(float deltaTime) {
 	player.rotationAngle += player.turnDirection * player.turnSpeed * deltaTime;
-	//player.rotationAngle = normalizeAngle(player.rotationAngle);
 	int moveStep = player.walkSpeed * player.walkDirection * deltaTime;
 	float newPlayerX = (player.x + (cos(player.rotationAngle) * moveStep));
 	float newPlayerY = (player.y + (sin(player.rotationAngle) * moveStep));
@@ -166,7 +165,7 @@ void castRay(float rayAngle, int stripId) {
 	int horzHitType = 0;
 
 	yIntercept = floor(player.y / TILE_SIZE) * TILE_SIZE;
-	yIntercept = isRayFacingDown ? TILE_SIZE : 0;
+	yIntercept += isRayFacingDown ? TILE_SIZE : 0;
 
 	xIntercept = player.x + (yIntercept - player.y) / tan(rayAngle);
 
@@ -204,7 +203,7 @@ void castRay(float rayAngle, int stripId) {
 	float vertWallHitY = 0;
 	int vertHitType = 0;
 	xIntercept = floor(player.x / TILE_SIZE) * TILE_SIZE;
-	xIntercept = isRayFacingRight ? TILE_SIZE : 0;
+	xIntercept += isRayFacingRight ? TILE_SIZE : 0;
 
 	yIntercept = player.y + (xIntercept - player.x) * tan(rayAngle);
 
