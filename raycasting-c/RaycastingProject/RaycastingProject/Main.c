@@ -75,6 +75,46 @@ void setup() {
 
 }
 
+int hasWallAt(float x, float y) {
+	if (x < 0 || x > WINDOW_WIDTH || y < 0 || y > WINDOW_HEIGHT) {
+		return TRUE;
+	}
+	int mapGridIndexX = floor(x / TILE_SIZE);
+	int mapGridIndexY = floor(y / TILE_SIZE);
+	return map[mapGridIndexY][mapGridIndexX];
+}
+void movePlayer(float deltaTime) {
+	player.rotationAngle += player.turnDirection * player.turnSpeed * deltaTime;
+	int moveStep = player.walkSpeed * player.walkDirection * deltaTime;
+	float newPlayerX = (player.x + (cos(player.rotationAngle) * moveStep));
+	float newPlayerY = (player.y + (sin(player.rotationAngle) * moveStep));
+	//wall collision
+	//Can do two checks for player x with changed y and changed x with player Y.
+	//If I do two checks the walls you wont run into edge case movements where you can be a pixel or so away from a wall.
+	if (hasWallAt(newPlayerX, newPlayerY) == 0) {
+		player.x = newPlayerX;
+		player.y = newPlayerY;
+	}
+}
+void renderPlayer() {
+	SDL_FRect playerRect = {
+		MINIMAP_SCALE_FACTOR * player.x,
+		MINIMAP_SCALE_FACTOR * player.y,
+		MINIMAP_SCALE_FACTOR * player.width,
+		MINIMAP_SCALE_FACTOR * player.height
+	};
+	SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255);
+	SDL_RenderFillRect(renderer, &playerRect);
+
+	//Look direction rendering
+	SDL_RenderLine(
+		renderer,
+		MINIMAP_SCALE_FACTOR * player.x,
+		MINIMAP_SCALE_FACTOR * player.y,
+		MINIMAP_SCALE_FACTOR * player.x + cos(player.rotationAngle) * 40,
+		MINIMAP_SCALE_FACTOR * player.y + sin(player.rotationAngle) * 40
+		);
+}
 void renderMap() {
 	for (int i = 0; i < MAP_NUM_ROWS; i++) {
 		for (int j = 0; j < MAP_NUM_COLS; j++) {
@@ -102,6 +142,26 @@ void processInput() {
 		case SDL_EVENT_KEY_DOWN: {
 			if (event.key.key == SDLK_ESCAPE)
 				isGameRunning = false;
+			if (event.key.key == SDLK_UP)
+				player.walkDirection = 1;
+			if (event.key.key == SDLK_DOWN)
+				player.walkDirection = -1;
+			if (event.key.key == SDLK_LEFT)
+				player.turnDirection = -1;
+			if (event.key.key == SDLK_RIGHT)
+				player.turnDirection = 1;
+			break;
+		}
+		case SDL_EVENT_KEY_UP: {
+			if (event.key.key == SDLK_UP)
+				player.walkDirection = 0;
+			if (event.key.key == SDLK_DOWN)
+				player.walkDirection = 0;
+			if (event.key.key == SDLK_LEFT)
+				player.turnDirection = 0;
+			if (event.key.key == SDLK_RIGHT)
+				player.turnDirection = 0;
+			break;
 		}
 
 	}
@@ -118,6 +178,9 @@ void update() {
 	float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
 
 	ticksLastFrame = SDL_GetTicks();
+
+
+	movePlayer(deltaTime);
 	//Multiply any moving game object by deltaTime.
 
 }
@@ -128,7 +191,7 @@ void render() {
 	//SDL_FRect rect = { playerX, playerY, 20, 20 };
 	renderMap();
 	//renderRays();
-	//renderPlayer();
+	renderPlayer();
 
 	SDL_RenderPresent(renderer);
 }
@@ -137,6 +200,7 @@ int main(int argc, char* args[]) {
 	setup();
 	while (isGameRunning) {
 		processInput();
+		
 		update();
 		
 		render();
