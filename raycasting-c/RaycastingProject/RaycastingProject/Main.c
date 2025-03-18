@@ -391,13 +391,23 @@ void generate3DProjection() {
 		wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
 		//render wall from wallTopPixel to wallBottomPixel.
-		for (int y = wallTopPixel; y < wallBottomPixel; y++) {
-			if (rays[i].wasHitVertical) {
-				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFFFFFFF;
+		for (int y = 0; y < WINDOW_HEIGHT; y++) {
+			if (y < wallTopPixel) {
+				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFADD8E6;
 			}
-			else {
-				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFCCCCCC;
+			else if (y >= wallTopPixel && y <= wallBottomPixel) {
+				if (rays[i].wasHitVertical) {
+					colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFFFFFFF;
+				}
+				else {
+					colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFCCCCCC;
+				}
 			}
+			else if (y > wallBottomPixel)
+			{
+				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF000000;
+			}
+
 
 		}
 
