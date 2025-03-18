@@ -52,6 +52,11 @@ SDL_Renderer* renderer = NULL;
 int isGameRunning = FALSE;
 float playerX, playerY;
 int ticksLastFrame = 0;
+
+Uint32* colorBuffer = NULL;
+
+SDL_Texture* colorBufferTexture;
+
 int initializedWindow() {
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow("Test", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
@@ -71,6 +76,9 @@ int initializedWindow() {
 }
 
 void destroyWindow() {
+	//Free allocated resources
+	free(colorBuffer);
+	SDL_DestroyTexture(colorBufferTexture);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
@@ -85,11 +93,21 @@ void setup() {
 	player.height = 1;
 	player.turnDirection = 0;
 	player.walkDirection = 0;
-	player.rotationAngle = PI / 2; //90 degrees
-	player.walkSpeed = 100;
-	player.turnSpeed = 45 * (PI / 180); //45 degrees per second
+	player.rotationAngle = PI / 2; 
+	player.walkSpeed = 200;
+	player.turnSpeed = 90 * (PI / 180); //90 degrees per second
 
 
+	//allocated total amount of bytes for colorBuffer.
+	colorBuffer = (Uint32*)malloc(sizeof(Uint32) * (Uint32)WINDOW_WIDTH * (Uint32)WINDOW_HEIGHT);
+
+	colorBufferTexture = SDL_CreateTexture(
+		renderer,
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STREAMING,
+		WINDOW_WIDTH,
+		WINDOW_HEIGHT
+	);
 }
 
 int hasWallAt(float x, float y) {
@@ -355,11 +373,33 @@ void update() {
 	//Multiply any moving game object by deltaTime.
 
 }
+
+void clearColorBuffer(Uint32 color) {
+	for (int x = 0; x < WINDOW_WIDTH; x++) {
+		for (int y = 0; y < WINDOW_HEIGHT; y++) {
+			colorBuffer[(WINDOW_WIDTH * y) + x] = color;
+		}
+	}
+}
+
+void renderColorBuffer() {
+	SDL_UpdateTexture(colorBufferTexture, 
+		NULL, 
+		colorBuffer, 
+		(int)(Uint32)WINDOW_WIDTH * sizeof(Uint32)
+	);
+	SDL_RenderTexture(renderer, colorBufferTexture, NULL, NULL);
+}
+
 void render() {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 	
-	//SDL_FRect rect = { playerX, playerY, 20, 20 };
+	//clear the color buffer
+	renderColorBuffer();
+	clearColorBuffer(0xFFBBBBBB);//Passing a color. 0x = hexadecimal, FF = full opacity (256?), R = 00, G = 00, B = 00
+
+	//Minimap display
 	renderMap();
 	renderRays();
 	renderPlayer();
