@@ -57,6 +57,8 @@ Uint32* colorBuffer = NULL;
 
 SDL_Texture* colorBufferTexture;
 
+Uint32* wallTexture = NULL;
+
 int initializedWindow() {
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow("Test", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
@@ -99,6 +101,7 @@ void setup() {
 
 
 	//allocated total amount of bytes for colorBuffer.
+
 	colorBuffer = (Uint32*)malloc(sizeof(Uint32) * (Uint32)WINDOW_WIDTH * (Uint32)WINDOW_HEIGHT);
 
 	colorBufferTexture = SDL_CreateTexture(
@@ -108,6 +111,23 @@ void setup() {
 		WINDOW_WIDTH,
 		WINDOW_HEIGHT
 	);
+
+	wallTexture = (Uint32*)malloc(sizeof(Uint32) * (Uint32)WALL_TEXTURE_WIDTH * (Uint32)WALL_TEXTURE_HEIGHT);
+
+	wallTexture = SDL_CreateTexture(
+		renderer,
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STREAMING,
+		WALL_TEXTURE_WIDTH,
+		WALL_TEXTURE_HEIGHT
+	);
+	//creating a texture, to be subbed out for a png later.
+	for (int x = 0; x < WALL_TEXTURE_WIDTH; x++) {
+		for (int y = 0; y < WALL_TEXTURE_HEIGHT; y++) {
+			wallTexture[(WALL_TEXTURE_HEIGHT * x) + y] = (x % 8 && y % 8) ? 0xFF0000FF : 0xFF000000;
+		}
+	}
+
 }
 
 int hasWallAt(float x, float y) {
