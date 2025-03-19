@@ -59,6 +59,7 @@ SDL_Texture* colorBufferTexture;
 
 Uint32* wallTexture = NULL;
 
+
 int initializedWindow() {
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow("Test", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
@@ -114,13 +115,6 @@ void setup() {
 
 	wallTexture = (Uint32*)malloc(sizeof(Uint32) * (Uint32)WALL_TEXTURE_WIDTH * (Uint32)WALL_TEXTURE_HEIGHT);
 
-	wallTexture = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_STREAMING,
-		WALL_TEXTURE_WIDTH,
-		WALL_TEXTURE_HEIGHT
-	);
 	//creating a texture, to be subbed out for a png later.
 	for (int x = 0; x < WALL_TEXTURE_WIDTH; x++) {
 		for (int y = 0; y < WALL_TEXTURE_HEIGHT; y++) {
@@ -411,17 +405,31 @@ void generate3DProjection() {
 		wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
 		//render wall from wallTopPixel to wallBottomPixel.
+		float z = 0;
+		float incrementNumber = WALL_TEXTURE_HEIGHT / projectedWallHeight;
 		for (int y = 0; y < WINDOW_HEIGHT; y++) {
 			if (y < wallTopPixel) {
 				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFADD8E6;
 			}
 			else if (y >= wallTopPixel && y <= wallBottomPixel) {
-				if (rays[i].wasHitVertical) {
-					colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFFFFFFF;
+				//current tile can be found by the same method, divide current size by tile size to current current tile.
+				//math floor that number and then TILE_SIZE * mathFloor 
+				// subtract current x with that number. should give you the x texture position
+				int s = floor(i / TILE_SIZE);
+				int ss = TILE_SIZE * s;
+				int xTexturePos = i - ss;
+				if (xTexturePos > WALL_TEXTURE_WIDTH || xTexturePos < 0) {
+					xTexturePos = WALL_TEXTURE_WIDTH;
 				}
-				else {
-					colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFCCCCCC;
-				}
+				colorBuffer[(WINDOW_WIDTH * y) + i] = wallTexture[(WALL_TEXTURE_WIDTH * xTexturePos)+(int)z];
+				z += incrementNumber;
+
+				//if (rays[i].wasHitVertical) {
+				//	colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFFFFFFF;
+				//}
+				//else {
+				//	colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFCCCCCC;
+				//}
 			}
 			else if (y > wallBottomPixel)
 			{
