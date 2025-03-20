@@ -405,38 +405,25 @@ void generate3DProjection() {
 		wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
 		//render wall from wallTopPixel to wallBottomPixel.
-		float z = 0;
-		float incrementNumber = WALL_TEXTURE_HEIGHT / projectedWallHeight;
+		int textureOffsetX, textureOffsetY;
+		if (rays[i].wasHitVertical) {
+			textureOffsetX = (int) rays[i].wallHitY % TILE_SIZE;
+		}
+		else {
+			textureOffsetX = (int) rays[i].wallHitX % TILE_SIZE;
+		}
 		for (int y = 0; y < WINDOW_HEIGHT; y++) {
 			if (y < wallTopPixel) {
 				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFADD8E6;
 			}
 			else if (y >= wallTopPixel && y <= wallBottomPixel) {
-				//current tile can be found by the same method, divide current size by tile size to current current tile.
-				//math floor that number and then TILE_SIZE * mathFloor 
-				// subtract current x with that number. should give you the x texture position
-				int s = floor(i / TILE_SIZE);
-				int ss = TILE_SIZE * s;
-				int xTexturePos = i - ss;
-				if (xTexturePos > WALL_TEXTURE_WIDTH || xTexturePos < 0) {
-					xTexturePos = WALL_TEXTURE_WIDTH;
-				}
-				colorBuffer[(WINDOW_WIDTH * y) + i] = wallTexture[(WALL_TEXTURE_WIDTH * xTexturePos)+(int)z];
-				z += incrementNumber;
-
-				//if (rays[i].wasHitVertical) {
-				//	colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFFFFFFF;
-				//}
-				//else {
-				//	colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFCCCCCC;
-				//}
+				textureOffsetY = (y - wallTopPixel) * ((float)WALL_TEXTURE_HEIGHT / wallStripHeight);
+				colorBuffer[(WINDOW_WIDTH * y) + i] = wallTexture[(WALL_TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
 			}
 			else if (y > wallBottomPixel)
 			{
 				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF000000;
 			}
-
-
 		}
 
 
