@@ -399,10 +399,8 @@ void generate3DProjection() {
 		int wallStripHeight = (int)projectedWallHeight;
 
 		int wallTopPixel = (WINDOW_HEIGHT / 2) - (wallStripHeight / 2); 
-		wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel; 
 
 		int wallBottomPixel = (WINDOW_HEIGHT / 2) + (wallStripHeight / 2);//dont need to calculate this..
-		wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
 		//render wall from wallTopPixel to wallBottomPixel.
 		int textureOffsetX, textureOffsetY;
