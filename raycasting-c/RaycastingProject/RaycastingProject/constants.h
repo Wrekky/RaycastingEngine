@@ -14,7 +14,7 @@
 
 #define WALL_TEXTURE_WIDTH 64
 #define WALL_TEXTURE_HEIGHT 64
-#define FOV_ANGLE (60 * (PI / 180))
+#define FOV_ANGLE (75 * (PI / 180))
 
 #define NUM_RAYS WINDOW_WIDTH
 
