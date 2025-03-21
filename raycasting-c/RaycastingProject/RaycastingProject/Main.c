@@ -1,23 +1,24 @@
 #include <stdio.h>
 #include <SDL3/SDL.h>
 #include "constants.h"
+#include "textures.h"
 #include <limits.h>
 
 
 const int map[MAP_NUM_ROWS][MAP_NUM_COLS] = {
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ,1, 1, 1, 1, 1, 1, 1},
+	{1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1 ,1, 1, 1, 1, 1, 1, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+	{1, 0, 0, 0, 3, 0, 3, 0, 3, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+	{1, 0, 0, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 1, 1, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	{1, 1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
 struct Player {
@@ -57,8 +58,7 @@ Uint32* colorBuffer = NULL;
 
 SDL_Texture* colorBufferTexture;
 
-Uint32* wallTexture = NULL;
-
+Uint32* textures[NUM_TEXTURES];
 
 int initializedWindow() {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -113,14 +113,15 @@ void setup() {
 		WINDOW_HEIGHT
 	);
 
-	wallTexture = (Uint32*)malloc(sizeof(Uint32) * (Uint32)WALL_TEXTURE_WIDTH * (Uint32)WALL_TEXTURE_HEIGHT);
 
-	//creating a texture, to be subbed out for a png later.
-	for (int x = 0; x < WALL_TEXTURE_WIDTH; x++) {
-		for (int y = 0; y < WALL_TEXTURE_HEIGHT; y++) {
-			wallTexture[(WALL_TEXTURE_HEIGHT * x) + y] = (x % 8 && y % 8) ? 0xFF0000FF : 0xFF000000;
-		}
-	}
+	textures[0] = (Uint32*) REDBRICK_TEXTURE;
+	textures[1] = (Uint32*) PURPLESTONE_TEXTURE;
+	textures[2] = (Uint32*) MOSSYSTONE_TEXTURE;
+	textures[3] = (Uint32*) GRAYSTONE_TEXTURE;
+	textures[4] = (Uint32*) COLORSTONE_TEXTURE;
+	textures[5] = (Uint32*) BLUESTONE_TEXTURE;
+	textures[6] = (Uint32*) WOOD_TEXTURE;
+	textures[7] = (Uint32*) EAGLE_TEXTURE;
 
 }
 
@@ -410,13 +411,17 @@ void generate3DProjection() {
 		else {
 			textureOffsetX = (int) rays[i].wallHitX % TILE_SIZE;
 		}
+
+		int textureIndex = 1;
 		for (int y = 0; y < WINDOW_HEIGHT; y++) {
 			if (y < wallTopPixel) {
 				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFADD8E6;
 			}
 			else if (y >= wallTopPixel && y <= wallBottomPixel) {
+				textureIndex = rays[i].wallHitType - 1;
+
 				textureOffsetY = (y - wallTopPixel) * ((float)WALL_TEXTURE_HEIGHT / wallStripHeight);
-				colorBuffer[(WINDOW_WIDTH * y) + i] = wallTexture[(WALL_TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
+				colorBuffer[(WINDOW_WIDTH * y) + i] = textures[textureIndex][(WALL_TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
 			}
 			else if (y > wallBottomPixel)
 			{
