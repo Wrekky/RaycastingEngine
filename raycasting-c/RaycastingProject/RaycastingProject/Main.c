@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <SDL3/SDL.h>
 #include "constants.h"
 #include "textures.h"
@@ -54,11 +55,11 @@ int isGameRunning = FALSE;
 float playerX, playerY;
 int ticksLastFrame = 0;
 
-Uint32* colorBuffer = NULL;
+uint32_t* colorBuffer = NULL;
 
 SDL_Texture* colorBufferTexture;
 
-Uint32* textures[NUM_TEXTURES];
+uint32_t* textures[NUM_TEXTURES];
 
 int initializedWindow() {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -103,7 +104,7 @@ void setup() {
 
 	//allocated total amount of bytes for colorBuffer.
 
-	colorBuffer = (Uint32*)malloc(sizeof(Uint32) * (Uint32)WINDOW_WIDTH * (Uint32)WINDOW_HEIGHT);
+	colorBuffer = (uint32_t*)malloc(sizeof(uint32_t) * (uint32_t)WINDOW_WIDTH * (uint32_t)WINDOW_HEIGHT);
 
 	colorBufferTexture = SDL_CreateTexture(
 		renderer,
@@ -114,14 +115,14 @@ void setup() {
 	);
 
 
-	textures[0] = (Uint32*) REDBRICK_TEXTURE;
-	textures[1] = (Uint32*) PURPLESTONE_TEXTURE;
-	textures[2] = (Uint32*) MOSSYSTONE_TEXTURE;
-	textures[3] = (Uint32*) GRAYSTONE_TEXTURE;
-	textures[4] = (Uint32*) COLORSTONE_TEXTURE;
-	textures[5] = (Uint32*) BLUESTONE_TEXTURE;
-	textures[6] = (Uint32*) WOOD_TEXTURE;
-	textures[7] = (Uint32*) EAGLE_TEXTURE;
+	textures[0] = (uint32_t*) REDBRICK_TEXTURE;
+	textures[1] = (uint32_t*) PURPLESTONE_TEXTURE;
+	textures[2] = (uint32_t*) MOSSYSTONE_TEXTURE;
+	textures[3] = (uint32_t*) GRAYSTONE_TEXTURE;
+	textures[4] = (uint32_t*) COLORSTONE_TEXTURE;
+	textures[5] = (uint32_t*) BLUESTONE_TEXTURE;
+	textures[6] = (uint32_t*) WOOD_TEXTURE;
+	textures[7] = (uint32_t*) EAGLE_TEXTURE;
 
 }
 
@@ -432,7 +433,7 @@ void generate3DProjection() {
 
 	}
 }
-void clearColorBuffer(Uint32 color) {
+void clearColorBuffer(uint32_t color) {
 	for (int x = 0; x < WINDOW_WIDTH; x++) {
 		for (int y = 0; y < WINDOW_HEIGHT; y++) {
 			colorBuffer[(WINDOW_WIDTH * y) + x] = color;
@@ -444,7 +445,7 @@ void renderColorBuffer() {
 	SDL_UpdateTexture(colorBufferTexture, 
 		NULL, 
 		colorBuffer, 
-		(int)(Uint32)WINDOW_WIDTH * sizeof(Uint32)
+		(int)(uint32_t)WINDOW_WIDTH * sizeof(uint32_t)
 	);
 	SDL_RenderTexture(renderer, colorBufferTexture, NULL, NULL);
 }
