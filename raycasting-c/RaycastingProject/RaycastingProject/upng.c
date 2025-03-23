@@ -1,3 +1,4 @@
+
 /*
 uPNG -- derived from LodePNG version 20100808
 
@@ -1192,7 +1193,7 @@ static const unsigned CLCL[NUM_CODE_LENGTH_CODES]	/*the order in which "code len
 			return NULL;
 		}
 
-		file = fopen_s(&file, filename, "rb");
+		fopen_s(&file, filename, "rb");
 		if (file == NULL) {
 			SET_ERROR(upng, UPNG_ENOTFOUND);
 			return upng;
