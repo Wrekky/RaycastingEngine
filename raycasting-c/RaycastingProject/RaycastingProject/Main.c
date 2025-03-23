@@ -59,7 +59,7 @@ uint32_t* colorBuffer = NULL;
 
 SDL_Texture* colorBufferTexture;
 
-uint32_t* textures[NUM_TEXTURES];
+//uint32_t* textures[NUM_TEXTURES];
 
 int initializedWindow() {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -81,6 +81,7 @@ int initializedWindow() {
 
 void destroyWindow() {
 	//Free allocated resources
+	freeWallTextures();
 	free(colorBuffer);
 	SDL_DestroyTexture(colorBufferTexture);
 	SDL_DestroyRenderer(renderer);
@@ -113,17 +114,8 @@ void setup() {
 		WINDOW_WIDTH,
 		WINDOW_HEIGHT
 	);
-
-
-	textures[0] = (uint32_t*) REDBRICK_TEXTURE;
-	textures[1] = (uint32_t*) PURPLESTONE_TEXTURE;
-	textures[2] = (uint32_t*) MOSSYSTONE_TEXTURE;
-	textures[3] = (uint32_t*) GRAYSTONE_TEXTURE;
-	textures[4] = (uint32_t*) COLORSTONE_TEXTURE;
-	textures[5] = (uint32_t*) BLUESTONE_TEXTURE;
-	textures[6] = (uint32_t*) WOOD_TEXTURE;
-	textures[7] = (uint32_t*) EAGLE_TEXTURE;
-
+	//uses upng library to decode ann PNG files.
+	loadWallTextures();
 }
 
 int hasWallAt(float x, float y) {
@@ -422,7 +414,7 @@ void generate3DProjection() {
 				textureIndex = rays[i].wallHitType - 1;
 
 				textureOffsetY = (y - wallTopPixel) * ((float)WALL_TEXTURE_HEIGHT / wallStripHeight);
-				colorBuffer[(WINDOW_WIDTH * y) + i] = textures[textureIndex][(WALL_TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
+				colorBuffer[(WINDOW_WIDTH * y) + i] = wallTextures[textureIndex].texture_buffer[(WALL_TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
 			}
 			else if (y > wallBottomPixel)
 			{
