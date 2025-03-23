@@ -413,16 +413,14 @@ void generate3DProjection() {
 			else if (y >= wallTopPixel && y <= wallBottomPixel) {
 				textureIndex = rays[i].wallHitType - 1;
 
-				textureOffsetY = (y - wallTopPixel) * ((float)WALL_TEXTURE_HEIGHT / wallStripHeight);
-				colorBuffer[(WINDOW_WIDTH * y) + i] = wallTextures[textureIndex].texture_buffer[(WALL_TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
+				textureOffsetY = (y - wallTopPixel) * ((float)wallTextures[textureIndex].height / wallStripHeight);
+				colorBuffer[(WINDOW_WIDTH * y) + i] = wallTextures[textureIndex].texture_buffer[(wallTextures[textureIndex].width * textureOffsetY) + textureOffsetX];
 			}
 			else if (y > wallBottomPixel)
 			{
 				colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF000000;
 			}
 		}
-
-
 	}
 }
 void clearColorBuffer(uint32_t color) {
