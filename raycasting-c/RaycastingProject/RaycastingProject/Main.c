@@ -59,8 +59,6 @@ uint32_t* colorBuffer = NULL;
 
 SDL_Texture* colorBufferTexture;
 
-//uint32_t* textures[NUM_TEXTURES];
-
 int initializedWindow() {
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow("Test", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
