@@ -288,12 +288,11 @@ void castRay(float rayAngle, int stripId) {
 }
 
 void castAllRays() {
-	float rayAngle = player.rotationAngle - (FOV_ANGLE / 2);
-
+	float projectionPlaneDist = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
 	for (int stripId = 0; stripId < NUM_RAYS; stripId++) {
+		
+		float rayAngle = player.rotationAngle + atan((stripId - NUM_RAYS / 2) / projectionPlaneDist);
 		castRay(rayAngle, stripId);
-
-		rayAngle += FOV_ANGLE / NUM_RAYS;
 	}
 }
 void renderMap() {
