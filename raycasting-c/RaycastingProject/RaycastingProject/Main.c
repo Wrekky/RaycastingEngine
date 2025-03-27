@@ -113,7 +113,7 @@ void setup() {
 	loadWallTextures();
 }
 
-bool hasWallAt(float x, float y) {
+int hasWallAt(float x, float y) {
 	if (x < 0 || x > MAP_NUM_COLS * TILE_SIZE || y < 0 || y > MAP_NUM_ROWS * TILE_SIZE) {
 		return false;
 	}
@@ -395,14 +395,12 @@ void generate3DProjection() {
 			textureOffsetX = (int) rays[x].wallHitX % TILE_SIZE;
 		}
 
-		int textureIndex = 1;
+		int textureIndex = rays[x].wallHitType - 1;
 		for (int y = 0; y < WINDOW_HEIGHT; y++) {
 			if (y < wallTopPixel) {
 				colorBuffer[(WINDOW_WIDTH * y) + x] = 0xFFADD8E6;
 			}
 			else if (y >= wallTopPixel && y <= wallBottomPixel) {
-				textureIndex = rays[x].wallHitType - 1;
-
 				textureOffsetY = (y - wallTopPixel) * ((float)wallTextures[textureIndex].height / wallStripHeight);
 				colorBuffer[(WINDOW_WIDTH * y) + x] = wallTextures[textureIndex].texture_buffer[(wallTextures[textureIndex].width * textureOffsetY) + textureOffsetX];
 			}
