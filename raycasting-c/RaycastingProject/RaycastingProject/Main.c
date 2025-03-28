@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <SDL3/SDL.h>
-#include "constants.h"
-#include "textures.h"
 #include <limits.h>
 #include <stdbool.h>
+
+#include "defs.h"
+#include "textures.h"
+#include "graphics.h"
 
 const int map[MAP_NUM_ROWS][MAP_NUM_COLS] = {
 	{1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1 ,1, 1, 1, 1, 1, 1, 1},
@@ -46,43 +48,12 @@ struct Ray {
 
 } rays[NUM_RAYS];
 
-SDL_Window* window = NULL;
-SDL_Renderer* renderer = NULL;
+
 bool isGameRunning = false;
 float playerX, playerY;
 int ticksLastFrame = 0;
 
-uint32_t* colorBuffer = NULL;
 
-SDL_Texture* colorBufferTexture;
-
-int initializedWindow() {
-	SDL_Init(SDL_INIT_VIDEO);
-	window = SDL_CreateWindow("Test", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-
-	if (!window) {
-		fprintf(stderr, "Error creating SDL window. \n");
-		return false;
-	}
-
-	renderer = SDL_CreateRenderer(window, NULL);
-	if (!renderer) {
-		fprintf(stderr, "Error creating SDL renderer.\n");
-	}
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-
-	return true;
-}
-
-void destroyWindow() {
-	//Free allocated resources
-	freeWallTextures();
-	free(colorBuffer);
-	SDL_DestroyTexture(colorBufferTexture);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-	SDL_Quit();
-}
 void setup() {
 	// TODO:
 	// Initialize and setup game objects.
@@ -96,20 +67,6 @@ void setup() {
 	player.rotationAngle = PI / 2; 
 	player.walkSpeed = 200;
 	player.turnSpeed = 90 * (PI / 180); //90 degrees per second
-
-
-	//allocated total amount of bytes for colorBuffer.
-
-	colorBuffer = (uint32_t*)malloc(sizeof(uint32_t) * (uint32_t)WINDOW_WIDTH * (uint32_t)WINDOW_HEIGHT);
-
-	colorBufferTexture = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_RGBA32,
-		SDL_TEXTUREACCESS_STREAMING,
-		WINDOW_WIDTH,
-		WINDOW_HEIGHT
-	);
-	//uses upng library to decode ann PNG files.
 	loadWallTextures();
 }
 
@@ -137,7 +94,7 @@ void movePlayer(float deltaTime) {
 }
 
 void renderPlayer() {
-	SDL_FRect playerRect = {
+	/*SDL_FRect playerRect = {
 		MINIMAP_SCALE_FACTOR * player.x,
 		MINIMAP_SCALE_FACTOR * player.y,
 		MINIMAP_SCALE_FACTOR * player.width,
@@ -154,6 +111,7 @@ void renderPlayer() {
 		MINIMAP_SCALE_FACTOR * player.x + cos(player.rotationAngle) * 40,
 		MINIMAP_SCALE_FACTOR * player.y + sin(player.rotationAngle) * 40
 		);
+	*/
 }
 
 float normalizeAngle(float angle) {
@@ -289,6 +247,7 @@ void castAllRays() {
 	}
 }
 void renderMap() {
+	/*
 	for (int i = 0; i < MAP_NUM_ROWS; i++) {
 		for (int j = 0; j < MAP_NUM_COLS; j++) {
 			int tileX = j * TILE_SIZE;
@@ -303,9 +262,11 @@ void renderMap() {
 			SDL_RenderFillRect(renderer, &rect);
 		}
 	}
+	*/
 }
 
 void renderRays() {
+	/*
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 	for (int i = 0; i < NUM_RAYS; i++) {
 		SDL_RenderLine(
@@ -316,6 +277,7 @@ void renderRays() {
 			MINIMAP_SCALE_FACTOR * rays[i].wallHitY
 		);
 	}
+	*/
 }
 void processInput() {
 	SDL_Event event;
@@ -372,7 +334,7 @@ void update() {
 
 }
 
-void generate3DProjection() {
+void render3DProjection() {
 	for (int x = 0; x < NUM_RAYS; x++) {
 		rays[x];
 		float correctedDistance = rays[x].distance * cos(rays[x].rayAngle - player.rotationAngle); 
@@ -397,42 +359,26 @@ void generate3DProjection() {
 
 		int textureIndex = rays[x].wallHitType - 1;
 		for (int y = 0; y < WINDOW_HEIGHT; y++) {
-			if (y < wallTopPixel) {
-				colorBuffer[(WINDOW_WIDTH * y) + x] = 0xFFADD8E6;
+			if (y < wallTopPixel) 
+			{
+				drawPixel(x, y, 0xFFADD8E6);
 			}
-			else if (y >= wallTopPixel && y <= wallBottomPixel) {
+			else if (y >= wallTopPixel && y <= wallBottomPixel) 
+			{
 				textureOffsetY = (y - wallTopPixel) * ((float)wallTextures[textureIndex].height / wallStripHeight);
-				colorBuffer[(WINDOW_WIDTH * y) + x] = wallTextures[textureIndex].texture_buffer[(wallTextures[textureIndex].width * textureOffsetY) + textureOffsetX];
+				uint32_t texturePixelColor = wallTextures[textureIndex].texture_buffer[(wallTextures[textureIndex].width * textureOffsetY) + textureOffsetX];
+				drawPixel(x, y, texturePixelColor);
 			}
 			else if (y > wallBottomPixel)
 			{
-				colorBuffer[(WINDOW_WIDTH * y) + x] = 0xFF000000;
+				drawPixel(x, y, 0xFF000000);
 			}
 		}
 	}
 }
-void clearColorBuffer(uint32_t color) {
-	for (int x = 0; x < WINDOW_WIDTH; x++) {
-		for (int y = 0; y < WINDOW_HEIGHT; y++) {
-			colorBuffer[(WINDOW_WIDTH * y) + x] = color;
-		}
-	}
-}
 
-void renderColorBuffer() {
-	SDL_UpdateTexture(colorBufferTexture, 
-		NULL, 
-		colorBuffer, 
-		(int)(uint32_t)WINDOW_WIDTH * sizeof(uint32_t)
-	);
-	SDL_RenderTexture(renderer, colorBufferTexture, NULL, NULL);
-}
-
-void render() {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	
-	generate3DProjection();
+void render() {	
+	render3DProjection();
 	//clear the color buffer
 	renderColorBuffer();
 	clearColorBuffer(0xFFBBBBBB);//Passing a color. 0x = hexadecimal, FF = full opacity (256?), R = 00, G = 00, B = 00
@@ -441,11 +387,15 @@ void render() {
 	renderMap();
 	renderRays();
 	renderPlayer();
-
-	SDL_RenderPresent(renderer);
 }
+
+void releaseResources() {
+	freeWallTextures();
+	destroyWindow();
+}
+
 int main(int argc, char* args[]) {
-	isGameRunning = initializedWindow();
+	isGameRunning = initializeWindow();
 	setup();
 	while (isGameRunning) {
 		processInput();
