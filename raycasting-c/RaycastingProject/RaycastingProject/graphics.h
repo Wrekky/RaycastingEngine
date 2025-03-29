@@ -17,4 +17,6 @@ void renderColorBuffer();
 
 void drawPixel(int x, int y, uint32_t color);
 
+void drawRect(int width, int height, int x, int y, uint32_t color);
+
 #endif
