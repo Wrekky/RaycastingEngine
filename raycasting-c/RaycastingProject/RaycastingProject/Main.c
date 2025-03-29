@@ -7,22 +7,7 @@
 #include "defs.h"
 #include "textures.h"
 #include "graphics.h"
-
-const int map[MAP_NUM_ROWS][MAP_NUM_COLS] = {
-	{1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1 ,1, 1, 1, 1, 1, 1, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 3, 0, 3, 0, 3, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 5, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 1, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 2, 3, 4, 5, 6, 7, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-};
+#include "map.h"
 
 struct Player {
 	float x;
@@ -68,15 +53,6 @@ void setup() {
 	player.walkSpeed = 200;
 	player.turnSpeed = 90 * (PI / 180); //90 degrees per second
 	loadWallTextures();
-}
-
-int hasWallAt(float x, float y) {
-	if (x < 0 || x > MAP_NUM_COLS * TILE_SIZE || y < 0 || y > MAP_NUM_ROWS * TILE_SIZE) {
-		return false;
-	}
-	int mapGridIndexX = floor(x / TILE_SIZE);
-	int mapGridIndexY = floor(y / TILE_SIZE);
-	return map[mapGridIndexY][mapGridIndexX];
 }
 
 void movePlayer(float deltaTime) {
@@ -158,7 +134,8 @@ void castRay(float rayAngle, int stripId) {
 	float nextHorzTouchX = xIntercept;
 	float nextHorzTouchY = yIntercept;
 
-	while (nextHorzTouchX >= 0 && nextHorzTouchX <= MAP_NUM_COLS * TILE_SIZE && nextHorzTouchY >= 0 && nextHorzTouchY <= MAP_NUM_ROWS * TILE_SIZE) {
+	//while (nextHorzTouchX >= 0 && nextHorzTouchX <= MAP_NUM_COLS * TILE_SIZE && nextHorzTouchY >= 0 && nextHorzTouchY <= MAP_NUM_ROWS * TILE_SIZE) {
+	while (isInsideMap(nextHorzTouchX, nextHorzTouchY)) {
 		float xToCheck = nextHorzTouchX;
 		float yToCheck = nextHorzTouchY + (isRayFacingUp ? -1 : 0);
 
@@ -195,7 +172,7 @@ void castRay(float rayAngle, int stripId) {
 
 	float nextVertTouchX = xIntercept;
 	float nextVertTouchY = yIntercept;
-	while (nextVertTouchX >= 0 && nextVertTouchX <= MAP_NUM_COLS * TILE_SIZE && nextVertTouchY >= 0 && nextVertTouchY <= MAP_NUM_ROWS * TILE_SIZE) {
+	while (isInsideMap(nextVertTouchX, nextVertTouchY)) {
 		float xToCheck = nextVertTouchX + (isRayFacingLeft ? -1 : 0);
 		float yToCheck = nextVertTouchY;
 
@@ -245,24 +222,6 @@ void castAllRays() {
 		float rayAngle = player.rotationAngle + atan((stripId - NUM_RAYS / 2) / projectionPlaneDist);
 		castRay(rayAngle, stripId);
 	}
-}
-void renderMap() {
-	/*
-	for (int i = 0; i < MAP_NUM_ROWS; i++) {
-		for (int j = 0; j < MAP_NUM_COLS; j++) {
-			int tileX = j * TILE_SIZE;
-			int tileY = i * TILE_SIZE;
-			if (map[i][j] > 0) {
-				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			}
-			else {
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-			}
-			SDL_FRect rect = { tileX * MINIMAP_SCALE_FACTOR, tileY * MINIMAP_SCALE_FACTOR, TILE_SIZE * MINIMAP_SCALE_FACTOR, TILE_SIZE * MINIMAP_SCALE_FACTOR };
-			SDL_RenderFillRect(renderer, &rect);
-		}
-	}
-	*/
 }
 
 void renderRays() {
@@ -380,11 +339,12 @@ void render3DProjection() {
 void render() {	
 	render3DProjection();
 	//clear the color buffer
+	renderMap();
 	renderColorBuffer();
 	clearColorBuffer(0xFFBBBBBB);//Passing a color. 0x = hexadecimal, FF = full opacity (256?), R = 00, G = 00, B = 00
 
 	//Minimap display
-	renderMap();
+	
 	renderRays();
 	renderPlayer();
 }
