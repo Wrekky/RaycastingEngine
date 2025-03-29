@@ -71,7 +71,7 @@ void drawPixel(int x, int y, uint32_t color) {
 void drawRect(int width, int height, int x, int y, uint32_t color) {
 	for (int xPos = 0; xPos < width; xPos++) {
 		for (int yPos = 0; yPos < height; yPos++) {
-			colorBuffer[(WINDOW_WIDTH * (yPos + y)) + (xPos + x)] = color;
+			drawPixel(xPos + x, yPos + y, color);
 		}
 	}
 }
