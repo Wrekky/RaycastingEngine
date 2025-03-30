@@ -60,9 +60,6 @@ void movePlayer(float deltaTime) {
 	int moveStep = player.walkSpeed * player.walkDirection * deltaTime;
 	float newPlayerX = (player.x + (cos(player.rotationAngle) * moveStep));
 	float newPlayerY = (player.y + (sin(player.rotationAngle) * moveStep));
-	//wall collision
-	//Can do two checks for player x with changed y and changed x with player Y.
-	//If I do two checks the walls you wont run into edge case movements where you can be a pixel or so away from a wall.
 	if (hasWallAt(newPlayerX, newPlayerY) == 0) {
 		player.x = newPlayerX;
 		player.y = newPlayerY;
@@ -130,11 +127,9 @@ void castRay(float rayAngle, int stripId) {
 	xStep = TILE_SIZE / tan(rayAngle);
 	xStep *= (isRayFacingLeft && xStep > 0) ? -1 : 1;
 	xStep *= (isRayFacingRight && xStep < 0) ? -1 : 1;
-	////allsame
 	float nextHorzTouchX = xIntercept;
 	float nextHorzTouchY = yIntercept;
 
-	//while (nextHorzTouchX >= 0 && nextHorzTouchX <= MAP_NUM_COLS * TILE_SIZE && nextHorzTouchY >= 0 && nextHorzTouchY <= MAP_NUM_ROWS * TILE_SIZE) {
 	while (isInsideMap(nextHorzTouchX, nextHorzTouchY)) {
 		float xToCheck = nextHorzTouchX;
 		float yToCheck = nextHorzTouchY + (isRayFacingUp ? -1 : 0);
@@ -286,10 +281,10 @@ void update() {
 
 	ticksLastFrame = SDL_GetTicks();
 
-	
+	//Multiply any moving game object by deltaTime.
 	movePlayer(deltaTime);
 	castAllRays();
-	//Multiply any moving game object by deltaTime.
+	
 
 }
 
@@ -297,7 +292,7 @@ void render3DProjection() {
 	for (int x = 0; x < NUM_RAYS; x++) {
 		rays[x];
 		float correctedDistance = rays[x].distance * cos(rays[x].rayAngle - player.rotationAngle); 
-		float distanceProjPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2); //how far the player is from the projection plane.
+		float distanceProjPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
 		float projectedWallHeight = (TILE_SIZE / correctedDistance) * distanceProjPlane;
 
 
@@ -305,9 +300,8 @@ void render3DProjection() {
 
 		int wallTopPixel = (WINDOW_HEIGHT / 2) - (wallStripHeight / 2); 
 
-		int wallBottomPixel = (WINDOW_HEIGHT / 2) + (wallStripHeight / 2);//dont need to calculate this..
+		int wallBottomPixel = (WINDOW_HEIGHT / 2) + (wallStripHeight / 2);
 
-		//render wall from wallTopPixel to wallBottomPixel.
 		int textureOffsetX, textureOffsetY;
 		if (rays[x].wasHitVertical) {
 			textureOffsetX = (int) rays[x].wallHitY % TILE_SIZE;
@@ -338,13 +332,11 @@ void render3DProjection() {
 
 void render() {	
 	render3DProjection();
-	//clear the color buffer
 	renderMap();
 	renderColorBuffer();
 	clearColorBuffer(0xFFBBBBBB);//Passing a color. 0x = hexadecimal, FF = full opacity (256?), R = 00, G = 00, B = 00
 
-	//Minimap display
-	
+	//TODO: Move the following functions to seperate .h & .c files
 	renderRays();
 	renderPlayer();
 }
@@ -364,8 +356,6 @@ int main(int argc, char* args[]) {
 		
 		render();
 	}
-
 	destroyWindow();
-
 	return 0;
 }
