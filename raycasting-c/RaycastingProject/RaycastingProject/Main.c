@@ -118,11 +118,12 @@ void render3DProjection() {
 }
 
 void render() {	
+	clearColorBuffer(0xFFFFFFFF);
 	render3DProjection();
 	renderMap();
 	renderPlayer();
 	renderColorBuffer();
-	clearColorBuffer(0xFFBBBBBB);//Passing a color. 0x = hexadecimal, FF = full opacity (256?), R = 00, G = 00, B = 00
+	//Passing a color. 0x = hexadecimal, FF = full opacity (256?), R = 00, G = 00, B = 00
 
 	//TODO: Move the following functions to seperate .h & .c files
 	renderRays();
