@@ -19,4 +19,6 @@ void drawPixel(int x, int y, uint32_t color);
 
 void drawRect(int width, int height, int x, int y, uint32_t color);
 
+void drawLine(int p1x, int p1y, int p2x, int p2y, uint32_t);
+
 #endif
