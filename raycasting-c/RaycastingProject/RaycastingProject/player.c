@@ -24,23 +24,9 @@ void movePlayer(float deltaTime) {
 }
 
 void renderPlayer() {
-	drawRect(player.width * MINIMAP_SCALE_FACTOR, player.height * MINIMAP_SCALE_FACTOR, player.x * MINIMAP_SCALE_FACTOR, player.y * MINIMAP_SCALE_FACTOR, 0xFFFF0000);
-	/*SDL_FRect playerRect = {
-		MINIMAP_SCALE_FACTOR * player.x,
-		MINIMAP_SCALE_FACTOR * player.y,
-		MINIMAP_SCALE_FACTOR * player.width,
-		MINIMAP_SCALE_FACTOR * player.height
-	};
-	SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255);
-	SDL_RenderFillRect(renderer, &playerRect);
-
-	//Look direction rendering
-	SDL_RenderLine(
-		renderer,
-		MINIMAP_SCALE_FACTOR * player.x,
-		MINIMAP_SCALE_FACTOR * player.y,
-		MINIMAP_SCALE_FACTOR * player.x + cos(player.rotationAngle) * 40,
-		MINIMAP_SCALE_FACTOR * player.y + sin(player.rotationAngle) * 40
-		);
-	*/
+	drawRect(player.width * MINIMAP_SCALE_FACTOR, 
+		player.height * MINIMAP_SCALE_FACTOR, 
+		player.x * MINIMAP_SCALE_FACTOR, 
+		player.y * MINIMAP_SCALE_FACTOR, 
+		0xFFFF0000);
 }

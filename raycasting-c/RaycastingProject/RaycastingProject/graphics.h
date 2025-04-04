@@ -11,14 +11,14 @@ bool initializeWindow();
 
 void destroyWindow();
 
-void clearColorBuffer(uint32_t color);
+void clearColorBuffer(color_t color);
 
 void renderColorBuffer();
 
-void drawPixel(int x, int y, uint32_t color);
+void drawPixel(int x, int y, color_t color);
 
-void drawRect(int width, int height, int x, int y, uint32_t color);
+void drawRect(int width, int height, int x, int y, color_t color);
 
-void drawLine(int p1x, int p1y, int p2x, int p2y, uint32_t);
+void drawLine(int p1x, int p1y, int p2x, int p2y, color_t color);
 
 #endif
