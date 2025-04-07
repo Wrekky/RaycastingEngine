@@ -42,10 +42,19 @@ void render3DProjection() {
 			{
 				textureOffsetY = (y - wallTopPixel) * ((float)wallTextures[textureIndex].height / wallStripHeight);
 				uint32_t texturePixelColor = wallTextures[textureIndex].texture_buffer[(wallTextures[textureIndex].width * textureOffsetY) + textureOffsetX];
-				// Make the pixel color darker if the ray hit was vertical
+				
+				//make darker based on distance
+				float intensity = 1 - (rays[x].distance / (WINDOW_WIDTH + WINDOW_HEIGHT));
+				
+				if (rays[x].distance > WINDOW_WIDTH + WINDOW_HEIGHT) {
+					intensity = 0;
+				}
+				//distance of wall
+				changeColorIntensity(&texturePixelColor, intensity);
+
+				//make darker if wall hits a vertical intersection
 				if (rays[x].wasHitVertical) {
 					changeColorIntensity(&texturePixelColor, 0.7);
-				}
 				drawPixel(x, y, texturePixelColor);
 			}
 			else if (y > wallBottomPixel)
