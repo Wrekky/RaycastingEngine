@@ -55,6 +55,7 @@ void render3DProjection() {
 				//make darker if wall hits a vertical intersection
 				if (rays[x].wasHitVertical) {
 					changeColorIntensity(&texturePixelColor, 0.7);
+				}
 				drawPixel(x, y, texturePixelColor);
 			}
 			else if (y > wallBottomPixel)
