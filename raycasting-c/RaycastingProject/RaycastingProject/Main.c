@@ -14,8 +14,6 @@ bool isGameRunning = false;
 int ticksLastFrame = 0;
 
 void setup() {
-	// TODO:
-	// Initialize and setup game objects.
 	loadTextures();
 }
 
@@ -70,8 +68,6 @@ void update() {
 	//Multiply any moving game object by deltaTime.
 	movePlayer(deltaTime);
 	castAllRays();
-	
-
 }
 
 void render() {	
