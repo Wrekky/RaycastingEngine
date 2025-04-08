@@ -40,8 +40,8 @@ void render3DProjection() {
 			}
 			else if (y >= wallTopPixel && y <= wallBottomPixel)
 			{
-				textureOffsetY = (y - wallTopPixel) * ((float)wallTextures[textureIndex].height / wallStripHeight);
-				uint32_t texturePixelColor = wallTextures[textureIndex].texture_buffer[(wallTextures[textureIndex].width * textureOffsetY) + textureOffsetX];
+				textureOffsetY = (y - wallTopPixel) * ((float)textures[textureIndex].height / wallStripHeight);
+				uint32_t texturePixelColor = textures[textureIndex].texture_buffer[(textures[textureIndex].width * textureOffsetY) + textureOffsetX];
 				
 				//make darker based on distance
 				float intensity = 1 - (rays[x].distance / (WINDOW_WIDTH + WINDOW_HEIGHT));

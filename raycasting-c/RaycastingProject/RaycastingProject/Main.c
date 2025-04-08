@@ -16,7 +16,7 @@ int ticksLastFrame = 0;
 void setup() {
 	// TODO:
 	// Initialize and setup game objects.
-	loadWallTextures();
+	loadTextures();
 }
 
 void processInput() {
@@ -84,7 +84,7 @@ void render() {
 }
 
 void releaseResources() {
-	freeWallTextures();
+	freeTextures();
 	destroyWindow();
 }
 

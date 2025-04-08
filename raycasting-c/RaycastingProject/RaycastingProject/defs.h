@@ -16,7 +16,7 @@
 
 #define NUM_RAYS WINDOW_WIDTH
 
-#define FPS 240
+#define FPS 60
 #define FRAME_TIME_LENGTH (1000 / FPS)
 
 typedef uint32_t color_t;

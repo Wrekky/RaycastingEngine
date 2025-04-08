@@ -11,10 +11,10 @@ typedef struct {
 	uint32_t* texture_buffer;
 } texture_t;
 
-extern texture_t wallTextures[];
+extern texture_t textures[];
 
-void loadWallTextures();
+void loadTextures();
 
-void freeWallTextures();
+void freeTextures();
 
 #endif

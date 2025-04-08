@@ -1,6 +1,6 @@
 #include "textures.h"
 #include <stdio.h>
-texture_t wallTextures[NUM_TEXTURES];
+texture_t textures[NUM_TEXTURES];
 
 static const char* textureFileNames[NUM_TEXTURES] = {
     "./images/redbrick.png",
@@ -14,7 +14,7 @@ static const char* textureFileNames[NUM_TEXTURES] = {
     "./images/pikuma.png",
 };
 
-void loadWallTextures() {
+void loadTextures() {
     for (int i = 0; i < NUM_TEXTURES; i++) {
         upng_t* upng;
 
@@ -22,17 +22,17 @@ void loadWallTextures() {
         if (upng != NULL) {
             upng_decode(upng);
             if (upng_get_error(upng) == UPNG_EOK) {
-                wallTextures[i].upngTexture = upng;
-                wallTextures[i].width = upng_get_width(upng);
-                wallTextures[i].height = upng_get_height(upng);
-                wallTextures[i].texture_buffer = (uint32_t*)upng_get_buffer(upng);
+                textures[i].upngTexture = upng;
+                textures[i].width = upng_get_width(upng);
+                textures[i].height = upng_get_height(upng);
+                textures[i].texture_buffer = (uint32_t*)upng_get_buffer(upng);
             }
         }
     }
 }
 
-void freeWallTextures() {
+void freeTextures() {
     for (int i = 0; i < NUM_TEXTURES; i++) {
-        upng_free(wallTextures[i].upngTexture);
+        upng_free(textures[i].upngTexture);
     }
 }
