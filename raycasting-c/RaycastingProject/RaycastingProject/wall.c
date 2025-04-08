@@ -38,7 +38,7 @@ void render3DProjection() {
 			{
 				drawPixel(x, y, 0xFFADD8E6);
 			}
-			else if (y >= wallTopPixel && y <= wallBottomPixel)
+			else if (y > wallTopPixel && y < wallBottomPixel)
 			{
 				textureOffsetY = (y - wallTopPixel) * ((float)textures[textureIndex].height / wallStripHeight);
 				uint32_t texturePixelColor = textures[textureIndex].texture_buffer[(textures[textureIndex].width * textureOffsetY) + textureOffsetX];
@@ -58,7 +58,7 @@ void render3DProjection() {
 				}
 				drawPixel(x, y, texturePixelColor);
 			}
-			else if (y > wallBottomPixel)
+			else if (y >= wallBottomPixel)
 			{
 				drawPixel(x, y, 0xFF000000);
 			}
