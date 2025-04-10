@@ -4,14 +4,9 @@
 #include "defs.h"
 #include "upng.h"
 
-typedef struct {
-	upng_t* upngTexture;
-	int width;
-	int height;
-	uint32_t* texture_buffer;
-} texture_t;
+#define NUM_TEXTURES 9
 
-extern texture_t textures[];
+upng_t* textures[NUM_TEXTURES];
 
 void loadTextures();
 

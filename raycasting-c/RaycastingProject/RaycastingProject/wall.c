@@ -33,6 +33,9 @@ void render3DProjection() {
 		}
 
 		int textureIndex = rays[x].wallHitType - 1;
+
+		int textureWidth = upng_get_width(textures[textureIndex]);
+		int textureHeight = upng_get_height(textures[textureIndex]);
 		for (int y = 0; y < WINDOW_HEIGHT; y++) {
 			if (y < wallTopPixel)
 			{
@@ -40,8 +43,9 @@ void render3DProjection() {
 			}
 			else if (y > wallTopPixel && y < wallBottomPixel)
 			{
-				textureOffsetY = (y - wallTopPixel) * ((float)textures[textureIndex].height / wallStripHeight);
-				uint32_t texturePixelColor = textures[textureIndex].texture_buffer[(textures[textureIndex].width * textureOffsetY) + textureOffsetX];
+				textureOffsetY = (y - wallTopPixel) * ((float)textureHeight / wallStripHeight);
+				color_t* textureBuffer = (color_t*)upng_get_buffer(textures[textureIndex]);
+				color_t texturePixelColor = textureBuffer[(textureWidth * textureOffsetY) + textureOffsetX];
 				
 				//make darker based on distance
 				float intensity = 1 - (rays[x].distance / (WINDOW_WIDTH + WINDOW_HEIGHT));
