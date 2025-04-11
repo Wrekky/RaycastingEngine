@@ -13,6 +13,11 @@ static const char* textureFileNames[NUM_TEXTURES] = {
     "./images/wood.png",
     "./images/eagle.png",
     "./images/pikuma.png",
+    "./images/wood.png",
+    "./images/armor.png",
+    "./images/guard.png",
+    "./images/light.png",
+    "./images/table.png",
 };
 
 void loadTextures() {
