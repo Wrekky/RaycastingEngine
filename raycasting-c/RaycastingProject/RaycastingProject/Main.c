@@ -10,6 +10,7 @@
 #include "rays.h"
 #include "player.h"
 #include "wall.h"
+#include "sprite.h"
 bool isGameRunning = false;
 int ticksLastFrame = 0;
 
@@ -73,9 +74,12 @@ void update() {
 void render() {	
 	clearColorBuffer(0xFFFFFFFF);
 	render3DProjection();
+	renderSpriteProjection();
+
 	renderMap();
-	renderPlayer();
 	renderRays();
+	renderPlayer();
+	renderMapSprites();
 	renderColorBuffer();
 }
 

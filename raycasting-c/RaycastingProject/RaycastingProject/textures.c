@@ -4,7 +4,7 @@
 upng_t* textures[NUM_TEXTURES];
 
 static const char* textureFileNames[NUM_TEXTURES] = {
-    "./images/redbrick.png",
+    "./images/redbrick.png", //[0]
     "./images/purplestone.png",
     "./images/mossystone.png",
     "./images/graystone.png",
@@ -17,7 +17,7 @@ static const char* textureFileNames[NUM_TEXTURES] = {
     "./images/armor.png",
     "./images/guard.png",
     "./images/light.png",
-    "./images/table.png",
+    "./images/table.png", //[13]
 };
 
 void loadTextures() {
