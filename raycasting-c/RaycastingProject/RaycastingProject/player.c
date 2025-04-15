@@ -1,5 +1,7 @@
 #include "player.h"
 #include "color.h"
+#include "rays.h"
+
 player_t player = {
 	.x = MAP_NUM_COLS * TILE_SIZE / 2,
 	.y = MAP_NUM_ROWS * TILE_SIZE / 2,
@@ -14,6 +16,7 @@ player_t player = {
 
 void movePlayer(float deltaTime) {
 	player.rotationAngle += player.turnDirection * player.turnSpeed * deltaTime;
+	normalizeAngle(&player.rotationAngle);
 	int moveStep = player.walkSpeed * player.walkDirection * deltaTime;
 	float newPlayerX = (player.x + (cos(player.rotationAngle) * moveStep));
 	float newPlayerY = (player.y + (sin(player.rotationAngle) * moveStep));
