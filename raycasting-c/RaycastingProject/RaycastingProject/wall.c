@@ -1,5 +1,5 @@
 #include "wall.h"
-
+#include "color.h"
 // Change the color intensity based on a factor value between 0 and 1
 void changeColorIntensity(color_t* color, float factor) {
 	color_t a = (*color & 0xFF000000);
@@ -39,7 +39,7 @@ void render3DProjection() {
 		for (int y = 0; y < WINDOW_HEIGHT; y++) {
 			if (y < wallTopPixel)
 			{
-				drawPixel(x, y, 0xFFADD8E6);
+				drawPixel(x, y, CREAM_YELLOW);
 			}
 			else if (y > wallTopPixel && y < wallBottomPixel)
 			{
@@ -64,7 +64,7 @@ void render3DProjection() {
 			}
 			else if (y >= wallBottomPixel)
 			{
-				drawPixel(x, y, 0xFF000000);
+				drawPixel(x, y, BLACK);
 			}
 		}
 	}

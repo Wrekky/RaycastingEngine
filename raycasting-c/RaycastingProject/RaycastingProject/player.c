@@ -1,5 +1,5 @@
 #include "player.h"
-
+#include "color.h"
 player_t player = {
 	.x = MAP_NUM_COLS * TILE_SIZE / 2,
 	.y = MAP_NUM_ROWS * TILE_SIZE / 2,
@@ -28,5 +28,5 @@ void renderPlayer() {
 		player.height * MINIMAP_SCALE_FACTOR, 
 		player.x * MINIMAP_SCALE_FACTOR, 
 		player.y * MINIMAP_SCALE_FACTOR, 
-		0xFFFF0000);
+		RED);
 }

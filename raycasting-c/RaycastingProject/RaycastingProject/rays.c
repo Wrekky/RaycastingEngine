@@ -1,5 +1,5 @@
 #include "rays.h"
-
+#include "color.h"
 ray_t rays[NUM_RAYS];
 
 bool isRayFacingDown(float angle) {
@@ -149,7 +149,7 @@ void renderRays() {
 			MINIMAP_SCALE_FACTOR * player.y,
 			MINIMAP_SCALE_FACTOR * rays[i].wallHitX,
 			MINIMAP_SCALE_FACTOR * rays[i].wallHitY,
-			0xFFFFFF00
+			RED
 		);
 	}
 }

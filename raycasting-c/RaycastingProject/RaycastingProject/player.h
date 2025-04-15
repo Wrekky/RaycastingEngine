@@ -1,7 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "defs.h"
-#include "colors.h"
 #include "map.h"
 #include <stdint.h>
 typedef struct {

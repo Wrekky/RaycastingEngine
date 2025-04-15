@@ -1,5 +1,5 @@
 #include "map.h"
-
+#include "color.h"
 static const int map[MAP_NUM_ROWS][MAP_NUM_COLS] = {
 	{1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1 ,1, 1, 1, 1, 1, 1, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -35,10 +35,10 @@ void renderMap() {
 			int tileX = j * TILE_SIZE;
 			int tileY = i * TILE_SIZE;
 			if (map[i][j] > 0) {
-				drawRect(TILE_SIZE * MINIMAP_SCALE_FACTOR, TILE_SIZE * MINIMAP_SCALE_FACTOR, tileX * MINIMAP_SCALE_FACTOR, tileY * MINIMAP_SCALE_FACTOR, 0xFFFFFFFF);
+				drawRect(TILE_SIZE * MINIMAP_SCALE_FACTOR, TILE_SIZE * MINIMAP_SCALE_FACTOR, tileX * MINIMAP_SCALE_FACTOR, tileY * MINIMAP_SCALE_FACTOR, WHITE);
 			}
 			else {
-				drawRect(TILE_SIZE * MINIMAP_SCALE_FACTOR, TILE_SIZE * MINIMAP_SCALE_FACTOR, tileX * MINIMAP_SCALE_FACTOR, tileY * MINIMAP_SCALE_FACTOR, 0xFF000000);
+				drawRect(TILE_SIZE * MINIMAP_SCALE_FACTOR, TILE_SIZE * MINIMAP_SCALE_FACTOR, tileX * MINIMAP_SCALE_FACTOR, tileY * MINIMAP_SCALE_FACTOR, BLACK);
 			}
 		}
 	}

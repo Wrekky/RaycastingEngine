@@ -3,7 +3,7 @@
 #include "textures.h"
 #include "player.h"
 #include "defs.h"
-
+#include "color.h"
 #define NUM_SPRITES 1
 
 static sprite_t sprites[NUM_SPRITES] = {
@@ -12,7 +12,7 @@ static sprite_t sprites[NUM_SPRITES] = {
 
 void renderMapSprites() {
 	for (int i = 0; i < NUM_SPRITES; i++) {
-		drawRect(2, 2, sprites[i].x * MINIMAP_SCALE_FACTOR, sprites[i].y * MINIMAP_SCALE_FACTOR, 0xFFFF0000);
+		drawRect(2, 2, sprites[i].x * MINIMAP_SCALE_FACTOR, sprites[i].y * MINIMAP_SCALE_FACTOR, BLUE);
 	}
 }
 

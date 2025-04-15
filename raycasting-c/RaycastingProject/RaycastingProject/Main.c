@@ -11,6 +11,7 @@
 #include "player.h"
 #include "wall.h"
 #include "sprite.h"
+#include "color.h"
 bool isGameRunning = false;
 int ticksLastFrame = 0;
 
@@ -72,7 +73,7 @@ void update() {
 }
 
 void render() {	
-	clearColorBuffer(0xFFFFFFFF);
+	clearColorBuffer(WHITE);
 	render3DProjection();
 	renderSpriteProjection();
 
