@@ -1,6 +1,6 @@
 #include "player.h"
 #include "color.h"
-#include "rays.h"
+#include "utils.h"
 
 player_t player = {
 	.x = MAP_NUM_COLS * TILE_SIZE / 2,
