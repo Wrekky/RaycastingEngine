@@ -6,6 +6,7 @@
 #include "defs.h"
 #include "rays.h"
 #include "textures.h"
+#include "upng.h"
 
 void render3DProjection();
 
