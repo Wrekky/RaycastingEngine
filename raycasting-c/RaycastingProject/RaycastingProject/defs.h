@@ -11,6 +11,8 @@
 
 #define FOV_ANGLE (75 * (PI / 180))
 
+#define DIST_PROJ_PLANE (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
+
 #define NUM_RAYS WINDOW_WIDTH
 
 #define FPS 60

@@ -14,7 +14,7 @@ void render3DProjection() {
 	for (int x = 0; x < NUM_RAYS; x++) {
 		rays[x];
 		float correctedDistance = rays[x].distance * cos(rays[x].rayAngle - player.rotationAngle);
-		float distanceProjPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
+		float distanceProjPlane = DIST_PROJ_PLANE;//TODO: replace instances with DIST_PROJ_PLANE.
 		float projectedWallHeight = (TILE_SIZE / correctedDistance) * distanceProjPlane;
 
 
