@@ -42,6 +42,14 @@ void renderSpriteProjection() {
 		float projectedSpriteHeight = (TILE_SIZE / sprite.distance) * DIST_PROJ_PLANE;
 		float projectedSpriteWidth = projectedSpriteHeight; 
 
-		//TODO: Projection stuff
+		//Top sprite pixel
+		int spriteTopPixel = (WINDOW_HEIGHT / 2) - (projectedSpriteHeight / 2);
+		spriteTopPixel = (spriteTopPixel < 0) ? 0 : spriteTopPixel;
+
+		//Bottom sprite pixel
+		int spriteBottomPixel = (WINDOW_HEIGHT / 2) + (projectedSpriteHeight / 2);
+		spriteBottomPixel = (spriteBottomPixel > WINDOW_HEIGHT) ? WINDOW_HEIGHT : spriteBottomPixel;
+
+		// TODO: Define where the sprite should be drawn in X
 	}
 }
