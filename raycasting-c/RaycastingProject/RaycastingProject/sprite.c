@@ -28,14 +28,20 @@ void renderSpriteProjection() {
 		angleSpritePlayer = fabs(angleSpritePlayer);
 		if (angleSpritePlayer < (FOV_ANGLE / 2)) {
 			sprites[i].isVisible = true;
-
-			//sprites[i].angle = angleSpritePlayer;
-			//sprites[i].distance;
+			sprites[i].angle = angleSpritePlayer;
+			sprites[i].distance = distanceBetweenPoints(sprites[i].x, sprites[i].y, player.x, player.y);
 			visibleSprites[numVisibleSprites] = sprites[i];
 			numVisibleSprites++;
 		}
 		else {
 			sprites[i].isVisible = false;
 		}
+	}
+	for (int i = 0; i < numVisibleSprites; i++) {
+		sprite_t sprite = visibleSprites[i];
+		float projectedSpriteHeight = (TILE_SIZE / sprite.distance) * DIST_PROJ_PLANE;
+		float projectedSpriteWidth = projectedSpriteHeight; 
+
+		//TODO: Projection stuff
 	}
 }
