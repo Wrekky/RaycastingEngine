@@ -18,7 +18,6 @@ void renderSpriteProjection() {
 
 	for (int i = 0; i < NUM_SPRITES; i++) {
 		float angleSpritePlayer = player.rotationAngle - atan2(sprites[i].y - player.y, sprites[i].x - player.x);
-
 		if (angleSpritePlayer > PI) {
 			angleSpritePlayer -= TWO_PI;
 		}
@@ -40,8 +39,7 @@ void renderSpriteProjection() {
 	for (int i = 0; i < numVisibleSprites; i++) {
 		sprite_t sprite = visibleSprites[i];
 		float projectedSpriteHeight = (TILE_SIZE / sprite.distance) * DIST_PROJ_PLANE;
-		float projectedSpriteWidth = projectedSpriteHeight; 
-
+		float projectedSpriteWidth = projectedSpriteHeight;
 		//Top sprite pixel
 		int spriteTopPixel = (WINDOW_HEIGHT / 2) - (projectedSpriteHeight / 2);
 		spriteTopPixel = (spriteTopPixel < 0) ? 0 : spriteTopPixel;
@@ -50,6 +48,19 @@ void renderSpriteProjection() {
 		int spriteBottomPixel = (WINDOW_HEIGHT / 2) + (projectedSpriteHeight / 2);
 		spriteBottomPixel = (spriteBottomPixel > WINDOW_HEIGHT) ? WINDOW_HEIGHT : spriteBottomPixel;
 
-		// TODO: Define where the sprite should be drawn in X
+		float spriteAngle = atan2(sprite.y - player.y, sprite.x - player.x) - player.rotationAngle;
+		float spriteScreenPosX = tan(spriteAngle) * DIST_PROJ_PLANE;
+		//Sprite left pixel
+		int spriteLeftPixel = (WINDOW_WIDTH / 2) + spriteScreenPosX;
+		//Sprite right pixel
+		int spriteRightPixel = spriteLeftPixel + projectedSpriteWidth;
+
+		for (int x = spriteLeftPixel; x < spriteRightPixel; x++) {
+			for (int y = spriteTopPixel; y < spriteBottomPixel; y++) {
+				if (x > 0 && x < WINDOW_WIDTH && y > 0 && y < WINDOW_HEIGHT) {
+					drawPixel(x, y, RED);
+				}
+			}
+		}
 	}
 }
