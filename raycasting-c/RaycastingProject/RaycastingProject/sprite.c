@@ -57,14 +57,8 @@ void renderSpriteProjection() {
 			sprites[i].isVisible = false;
 		}
 	}
-	//sort numVisibleSprites
-	//sorting --> got to be pass and return?
 	
 	spriteSorter(visibleSprites, numVisibleSprites);
-	for (int i = 0; i < numVisibleSprites; i++) {
-		printf("%f", visibleSprites[i].distance);
-		printf(i + "\n");
-	}
 	
 	for (int i = 0; i < numVisibleSprites; i++) {
 		sprite_t sprite = visibleSprites[i];
