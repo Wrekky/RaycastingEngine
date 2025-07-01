@@ -52,6 +52,8 @@ void renderSpriteProjection() {
 		float spriteScreenPosX = tan(spriteAngle) * DIST_PROJ_PLANE;
 		//Sprite left pixel
 		int spriteLeftPixel = (WINDOW_WIDTH / 2) + spriteScreenPosX;
+		//centering the sprite
+		spriteLeftPixel -= projectedSpriteWidth / 2;
 		//Sprite right pixel
 		int spriteRightPixel = spriteLeftPixel + projectedSpriteWidth;
 
