@@ -6,8 +6,8 @@
 #define TILE_SIZE 64
 
 #define MINIMAP_SCALE_FACTOR 0.3
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
+#define WINDOW_WIDTH 680
+#define WINDOW_HEIGHT 480
 
 #define FOV_ANGLE (75 * (PI / 180))
 
