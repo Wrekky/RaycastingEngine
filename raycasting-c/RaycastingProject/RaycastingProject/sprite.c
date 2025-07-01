@@ -63,7 +63,9 @@ void renderSpriteProjection() {
 	for (int i = 0; i < numVisibleSprites; i++) {
 		sprite_t sprite = visibleSprites[i];
 
-		float projectedSpriteHeight = (TILE_SIZE / sprite.distance) * DIST_PROJ_PLANE;
+		//Same fix for the fish eye effect that I used for the walls.
+		float correctedDistance = sprite.distance * cos(sprite.angle);
+		float projectedSpriteHeight = (TILE_SIZE / correctedDistance) * DIST_PROJ_PLANE;
 		float projectedSpriteWidth = projectedSpriteHeight;
 		//Top sprite pixel
 		int spriteTopPixel = (WINDOW_HEIGHT / 2) - (projectedSpriteHeight / 2);
