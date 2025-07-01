@@ -55,10 +55,20 @@ void renderSpriteProjection() {
 		//Sprite right pixel
 		int spriteRightPixel = spriteLeftPixel + projectedSpriteWidth;
 
+		//find the width and height of the visible sprite texture
+		int textureWidth = upng_get_width(textures[sprite.textureIndex]);
+		int textureHeight = upng_get_height(textures[sprite.textureIndex]);
+
 		for (int x = spriteLeftPixel; x < spriteRightPixel; x++) {
+			float texturePixelWidth = textureWidth / projectedSpriteWidth;
+			float texturePixelHeight = textureHeight / projectedSpriteHeight;
+			int textureOffsetX = (x - spriteLeftPixel) * texturePixelWidth;
 			for (int y = spriteTopPixel; y < spriteBottomPixel; y++) {
+				int textureOffsetY = (y - spriteTopPixel) * texturePixelHeight;
 				if (x > 0 && x < WINDOW_WIDTH && y > 0 && y < WINDOW_HEIGHT) {
-					drawPixel(x, y, RED);
+					color_t* textureBuffer = (color_t*)upng_get_buffer(textures[sprite.textureIndex]);
+					color_t texturePixelColor = textureBuffer[(textureWidth * textureOffsetY) + textureOffsetX];
+					drawPixel(x, y, texturePixelColor);
 				}
 			}
 		}
