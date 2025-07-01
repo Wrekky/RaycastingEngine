@@ -70,7 +70,9 @@ void renderSpriteProjection() {
 				if (x > 0 && x < WINDOW_WIDTH && y > 0 && y < WINDOW_HEIGHT) {
 					color_t* textureBuffer = (color_t*)upng_get_buffer(textures[sprite.textureIndex]);
 					color_t texturePixelColor = textureBuffer[(textureWidth * textureOffsetY) + textureOffsetX];
-					drawPixel(x, y, texturePixelColor);
+					if (texturePixelColor != 0xFFFF00FF) {
+						drawPixel(x, y, texturePixelColor);
+					}
 				}
 			}
 		}
