@@ -28,7 +28,7 @@ void renderSpriteProjection() {
 			angleSpritePlayer += TWO_PI;
 		}
 		angleSpritePlayer = fabs(angleSpritePlayer);
-		if (angleSpritePlayer < (FOV_ANGLE / 2)) {
+		if (angleSpritePlayer < (FOV_ANGLE / 2) + (FOV_ANGLE / 4)) {
 			sprites[i].isVisible = true;
 			sprites[i].angle = angleSpritePlayer;
 			sprites[i].distance = distanceBetweenPoints(sprites[i].x, sprites[i].y, player.x, player.y);
