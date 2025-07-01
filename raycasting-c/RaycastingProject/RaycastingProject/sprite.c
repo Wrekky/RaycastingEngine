@@ -1,9 +1,12 @@
 #include "sprite.h"
 
-#define NUM_SPRITES 1
+#define NUM_SPRITES 4
 
 static sprite_t sprites[NUM_SPRITES] = {
-	{.x = 640, .y = 630, .textureIndex = 13}
+	{.x = 640, .y = 630, .textureIndex = 10},
+	{ .x = 300, .y = 300, .textureIndex = 11 },
+	{.x = 200, .y = 200, .textureIndex = 12},
+	{.x = 400, .y = 400, .textureIndex = 13}
 };
 
 void renderMapSprites() {
