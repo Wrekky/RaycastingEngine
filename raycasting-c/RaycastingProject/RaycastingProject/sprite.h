@@ -1,5 +1,5 @@
 #ifndef SPRITE_H	
-#define SRITE_H
+#define SPRITE_H
 #include "graphics.h"
 #include "textures.h"
 #include "player.h"

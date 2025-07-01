@@ -8,7 +8,30 @@ static sprite_t sprites[NUM_SPRITES] = {
 	{.x = 200, .y = 200, .textureIndex = 12},
 	{.x = 400, .y = 400, .textureIndex = 13}
 };
-
+//simple bubble sort
+void spriteSorter(sprite_t visibleSprites[], int numVisibleSprites) {
+	sprite_t tempObj;
+	bool NoSwaps = false;
+	while (!NoSwaps) {
+		int i = 0;
+		NoSwaps = true;
+		while (i < numVisibleSprites) {
+			if (i + 1 < numVisibleSprites) {
+				if (visibleSprites[i].distance < visibleSprites[i + 1].distance) {
+					tempObj = visibleSprites[i];
+					visibleSprites[i] = visibleSprites[i + 1];
+					visibleSprites[i + 1] = tempObj;
+					i = i + 1;
+					NoSwaps = false;
+				}
+				i++;
+			}
+			else {
+				i++;
+			}
+		}
+	}
+}
 void renderMapSprites() {
 	for (int i = 0; i < NUM_SPRITES; i++) {
 		drawRect(2, 2, sprites[i].x * MINIMAP_SCALE_FACTOR, sprites[i].y * MINIMAP_SCALE_FACTOR, sprites[i].isVisible ? BLUE : GREEN);
@@ -39,8 +62,18 @@ void renderSpriteProjection() {
 			sprites[i].isVisible = false;
 		}
 	}
+	//sort numVisibleSprites
+	//sorting --> got to be pass and return?
+	
+	spriteSorter(visibleSprites, numVisibleSprites);
+	for (int i = 0; i < numVisibleSprites; i++) {
+		printf("%f", visibleSprites[i].distance);
+		printf(i + "\n");
+	}
+	
 	for (int i = 0; i < numVisibleSprites; i++) {
 		sprite_t sprite = visibleSprites[i];
+
 		float projectedSpriteHeight = (TILE_SIZE / sprite.distance) * DIST_PROJ_PLANE;
 		float projectedSpriteWidth = projectedSpriteHeight;
 		//Top sprite pixel
