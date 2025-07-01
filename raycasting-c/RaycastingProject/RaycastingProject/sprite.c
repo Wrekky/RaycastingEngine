@@ -8,26 +8,21 @@ static sprite_t sprites[NUM_SPRITES] = {
 	{.x = 200, .y = 200, .textureIndex = 12},
 	{.x = 400, .y = 400, .textureIndex = 13}
 };
-//simple bubble sort
+
+//Sprite sorter using bubble sort
 void spriteSorter(sprite_t visibleSprites[], int numVisibleSprites) {
 	sprite_t tempObj;
-	bool NoSwaps = false;
-	while (!NoSwaps) {
-		int i = 0;
-		NoSwaps = true;
-		while (i < numVisibleSprites) {
+	bool noSwaps = false;
+	while (!noSwaps) {
+		noSwaps = true;
+		for (int i = 0; i < numVisibleSprites; i++) {
 			if (i + 1 < numVisibleSprites) {
 				if (visibleSprites[i].distance < visibleSprites[i + 1].distance) {
 					tempObj = visibleSprites[i];
 					visibleSprites[i] = visibleSprites[i + 1];
 					visibleSprites[i + 1] = tempObj;
-					i = i + 1;
-					NoSwaps = false;
+					noSwaps = false;
 				}
-				i++;
-			}
-			else {
-				i++;
 			}
 		}
 	}
